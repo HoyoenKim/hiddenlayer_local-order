@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex-center">
-    <div class="q-pt-lg text-h5 text-center">커피 주문 확인</div>
+    <div class="q-pt-lg text-h5 text-center">주문 확인</div>
     <div class="q-pa-md">
       <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
         <q-input
@@ -22,6 +22,18 @@
           :rules="[
             (val) => (val !== null && val !== '') || 'Please type your age',
             (val) => (val > 0 && val < 100) || 'Please type a real age',
+          ]"
+        />
+
+        <q-input
+          filled
+          v-model="passwd"
+          label="비밀번호 *"
+          hint="주문시 사용한 비밀번호"
+          lazy-rules
+          :rules="[
+            (val) => (val !== null && val !== '') || 'Please type your passwd',
+            (val) => (val > 0 && val < 100) || 'Please type a real passwd',
           ]"
         />
 
@@ -53,6 +65,7 @@ export default defineComponent({
 
     const name = ref(null);
     const age = ref(null);
+    const passwd = ref(null);
     const accept = ref(false);
 
     return {

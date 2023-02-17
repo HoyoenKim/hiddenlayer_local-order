@@ -5,14 +5,28 @@
         <q-btn outline round icon="notifications" @click="toggleLeftDrawer"
           ><q-badge color="red" floating>10+</q-badge></q-btn
         >
-        <q-toolbar-title class="text-center"> Local Order </q-toolbar-title>
+        <q-toolbar-title class="text-center" cliackable to="/">
+          <q-tabs
+            indicator-color="transparent"
+            dense
+            class="bg-white text-black"
+          >
+            <q-route-tab :ripple="false" no-caps to="/" exact
+              >Local Order</q-route-tab
+            >
+          </q-tabs>
+        </q-toolbar-title>
         <q-btn outline round icon="person_outline" @click="toggleRightDrawer" />
       </q-toolbar>
       <q-tabs class="bg-white text-black">
-        <q-route-tab no-caps to="/" exact>Store</q-route-tab>
+        <q-route-tab :ripple="false" no-caps to="/" exact>Store</q-route-tab>
         <!--<q-route-tab no-caps to="/order" exact>Order test</q-route-tab>-->
-        <q-route-tab no-caps to="/curation" exact>Event</q-route-tab>
-        <q-route-tab no-caps to="/check" exact>My Order</q-route-tab>
+        <q-route-tab :ripple="false" no-caps to="/event" exact
+          >Event</q-route-tab
+        >
+        <q-route-tab :ripple="false" no-caps to="/check" exact
+          >My Order</q-route-tab
+        >
       </q-tabs>
     </q-header>
 
@@ -25,6 +39,7 @@
     >
       <q-list>
         <q-item-label header> Event Notifications </q-item-label>
+        <EventNotifications></EventNotifications>
       </q-list>
     </q-drawer>
 
@@ -53,11 +68,21 @@
       <router-view />
     </q-page-container>
     <q-footer elevated class="bg-white">
-      <q-tabs dense v-model="tab" class="text-black">
-        <q-tab name="search" icon="search" label="Search" no-caps />
-        <q-tab name="qr" icon="qr_code" label="QR code" no-caps="" />
-        <q-tab name="wallet" icon="wallet" label="My Wallet" no-caps />
-        <q-tab name="info" icon="info" label="My Info" no-caps="" /></q-tabs
+      <q-tabs dense class="text-black">
+        <q-route-tab exact to="/search" icon="search" label="Search" no-caps />
+        <q-route-tab exact to="/qr" icon="qr_code" label="QR code" no-caps="" />
+        <q-route-tab
+          exact
+          to="myWallet"
+          icon="wallet"
+          label="My Wallet"
+          no-caps />
+        <q-route-tab
+          exact
+          to="myInfo"
+          icon="info"
+          label="My Info"
+          no-caps="" /></q-tabs
     ></q-footer>
   </q-layout>
 </template>
@@ -76,7 +101,7 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-import EssentialLink from "components/EssentialLink.vue";
+import EventNotifications from "src/components/EventNotifications.vue";
 
 const linksList = [
   {
@@ -103,7 +128,7 @@ export default defineComponent({
   name: "MainLayout",
 
   components: {
-    //EssentialLink,
+    EventNotifications,
   },
 
   setup() {
