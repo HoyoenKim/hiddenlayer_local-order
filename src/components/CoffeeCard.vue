@@ -92,6 +92,6 @@ export default defineComponent({
 </script>
 <style lang="sass" scoped>
 .my-card
-  width: 100%
+  width: 95vw
   max-width: 95vw
 </style>

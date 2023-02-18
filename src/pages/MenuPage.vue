@@ -33,18 +33,46 @@
       </q-carousel>
     </div>
     <div>
-      <q-card flat class="q-pt-md my-card">
-        <q-card-section class="text-h5 text-bold text-center">
+      <q-card flat class="q-pt-md my-card row">
+        <q-card-section class="col-12 q-pa-xs text-h5 text-bold text-center">
           {{ storeName }}
-          <q-btn flat round color="red" icon="favorite" />
-          <q-btn flat round color="accent" icon="bookmark" />
-          <q-btn flat round color="primary" icon="share" />
         </q-card-section>
-        <q-separator />
-        <q-card-actions vertical class="justify-around"> </q-card-actions>
+
+        <q-card-action align="center" class="col-12 no-wrap items-center">
+          <q-btn flat color="red" icon="favorite">
+            <div class="q-pa-sm text-black">좋아요</div></q-btn
+          >
+          <q-btn flat color="accent" icon="bookmark">
+            <div class="q-pa-sm text-black">정기 구독</div></q-btn
+          >
+          <q-btn flat color="primary" icon="share">
+            <div class="q-pa-sm text-black">공유</div></q-btn
+          >
+        </q-card-action>
+
+        <q-card-section class="col-12 q-py-none text-h6 text-center">
+          <q-card
+            flat
+            bordered
+            class="my-card bg-grey-4 text-orange-7 text-bold"
+          >
+            <q-card-section> 이벤트 확인하기 </q-card-section>
+          </q-card>
+        </q-card-section>
+        <q-card-section class="col-12 q-pa-none q-pb-none">
+          <q-tabs
+            v-model="tab"
+            no-caps
+            class="bg-white text-black"
+            style="width: 100vw"
+          >
+            <q-tab name="mails" label="메뉴" />
+            <q-tab name="alarms" label="정보" />
+            <q-tab name="movies" label="리뷰" />
+          </q-tabs>
+        </q-card-section>
       </q-card>
     </div>
-    <div>{{ storeName }}</div>
     <div class="q-py-md flex-center column q-gutter-md">
       <div class="col">
         <CoffeeCard
@@ -86,6 +114,7 @@ export default defineComponent({
     const { increment } = store; // actions can be destructured directly
 
     return {
+      tab: ref("mails"),
       storeName,
       increment,
       slide: ref("first"),
