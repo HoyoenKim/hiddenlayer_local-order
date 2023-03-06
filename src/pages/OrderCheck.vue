@@ -2,41 +2,44 @@
   <q-page class="flex-center">
     <div class="q-pt-lg text-h5 text-center">주문 확인</div>
     <div class="q-pa-md">
-      <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+      <form
+        @submit.prevent.stop="onSubmit"
+        @reset.prevent.stop="onReset"
+        class="q-gutter-sm"
+      >
         <q-input
-          filled
+          outlined
+          ref="nameRef"
           v-model="name"
-          label="이름 *"
-          hint="주문시 사용한 닉네임"
-          lazy-rules
-          :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+          label="주문자 정보 *"
+          :rules="nameRules"
         />
 
         <q-input
-          filled
-          type="number"
-          v-model="age"
-          label="전화번호 *"
-          hint="주문시 사용한 전화번호"
-          lazy-rules
-          :rules="[
-            (val) => (val !== null && val !== '') || 'Please type your age',
-            (val) => (val > 0 && val < 100) || 'Please type a real age',
-          ]"
+          outlined
+          ref="phoneRef"
+          v-model="phone"
+          label="휴대폰 번호 *"
+          mask="(###) #### - ####"
+          :rules="phoneRules"
         />
 
         <q-input
-          filled
-          v-model="passwd"
+          outlined
+          ref="passwordRef"
+          v-model="password"
           label="비밀번호 *"
-          hint="주문시 사용한 비밀번호"
-          lazy-rules
-          :rules="[
-            (val) => (val !== null && val !== '') || 'Please type your passwd',
-            (val) => (val > 0 && val < 100) || 'Please type a real passwd',
-          ]"
-        />
-
+          :type="isPwd ? 'password' : 'text'"
+          :rules="passwordRules"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="isPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="isPwd = !isPwd"
+            />
+          </template>
+        </q-input>
         <!--<q-toggle v-model="accept" label="개인정보 제공에 동의합니다" />-->
 
         <div>
@@ -49,13 +52,15 @@
             class="q-ml-sm"
           />
         </div>
-      </q-form>
+      </form>
     </div>
   </q-page>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
+import { useCartStore } from "stores/shoppingCart";
+import { useOrderCheckStore } from "stores/orderCheck";
 import { useQuasar } from "quasar";
 
 export default defineComponent({
@@ -64,37 +69,63 @@ export default defineComponent({
     const $q = useQuasar();
 
     const name = ref(null);
-    const age = ref(null);
-    const passwd = ref(null);
+    const nameRef = ref(null);
+
+    const phone = ref(null);
+    const phoneRef = ref(null);
+
+    const password = ref(null);
+    const passwordRef = ref(null);
+
     const accept = ref(false);
+
+    const orderStore = useOrderCheckStore();
+    // use destructuring to use the store in the template
+    const { checkOrder } = orderStore; // actions can be destructured directly
 
     return {
       name,
-      age,
-      accept,
+      nameRef,
+      nameRules: [(val) => (val && val.length > 0) || "이름을 입력해 주세요."],
+
+      phone,
+      phoneRef,
+      phoneRules: [
+        (val) => (val !== null && val !== "") || "전화번호를 입력해 주세요.",
+      ],
+
+      password,
+      passwordRef,
+      passwordRules: [
+        (val) => (val !== null && val !== "") || "비밀번호를 입력해 주세요.",
+      ],
+      isPwd: true,
+      checkOrder,
 
       onSubmit() {
-        if (accept.value !== true) {
-          $q.notify({
-            color: "red-5",
-            textColor: "white",
-            icon: "warning",
-            message: "You need to accept the license and terms first",
-          });
+        nameRef.value.validate();
+        phoneRef.value.validate();
+        passwordRef.value.validate();
+
+        if (
+          nameRef.value.hasError ||
+          phoneRef.value.hasError ||
+          passwordRef.value.hasError
+        ) {
+          // form has error
         } else {
-          $q.notify({
-            color: "green-4",
-            textColor: "white",
-            icon: "cloud_done",
-            message: "Submitted",
-          });
+          checkOrder(name.value, phone.value, password.value);
         }
       },
 
       onReset() {
         name.value = null;
-        age.value = null;
-        accept.value = false;
+        phone.value = null;
+        password.value = null;
+
+        nameRef.value.resetValidation();
+        phoneRef.value.resetValidation();
+        passwordRef.value.resetValidation();
       },
     };
   },

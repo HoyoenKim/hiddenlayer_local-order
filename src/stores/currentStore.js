@@ -12,8 +12,6 @@ export const useCurrentStore = defineStore("current", {
     },
   },
 
-  setters: {},
-
   actions: {
     increment() {
       this.counter++;

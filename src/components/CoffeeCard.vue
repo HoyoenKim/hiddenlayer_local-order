@@ -34,7 +34,6 @@
         href="https://docs.google.com/forms/d/1dKUJJWzPUq-EG8kA1nEBjzimwtZmF20Vk1VMp_gHjN8/edit"
         label="예약하기"
       />
-
       <q-space />
 
       <q-btn
@@ -93,5 +92,5 @@ export default defineComponent({
 <style lang="sass" scoped>
 .my-card
   width: 95vw
-  max-width: 95vw
+  max-width: 500px
 </style>

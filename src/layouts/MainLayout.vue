@@ -1,9 +1,9 @@
 <template>
   <q-layout view="hHh lpR fFr">
     <q-header height-hint="98">
-      <q-toolbar class="q-pt-sm bg-white text-black">
+      <q-toolbar class="q-py-sm bg-white text-black">
         <q-btn outline round icon="notifications" @click="toggleLeftDrawer"
-          ><q-badge color="red" floating>10+</q-badge></q-btn
+          ><q-badge color="red" floating>1</q-badge></q-btn
         >
         <q-toolbar-title class="text-center" cliackable to="/">
           <q-tabs
@@ -18,16 +18,6 @@
         </q-toolbar-title>
         <q-btn outline round icon="person_outline" @click="toggleRightDrawer" />
       </q-toolbar>
-      <q-tabs class="bg-white text-black">
-        <q-route-tab :ripple="false" no-caps to="/" exact>Store</q-route-tab>
-        <!--<q-route-tab no-caps to="/order" exact>Order test</q-route-tab>-->
-        <q-route-tab :ripple="false" no-caps to="/event" exact
-          >Event</q-route-tab
-        >
-        <q-route-tab :ripple="false" no-caps to="/check" exact
-          >My Order</q-route-tab
-        >
-      </q-tabs>
     </q-header>
 
     <q-drawer
@@ -38,14 +28,13 @@
       bordered
     >
       <q-list>
-        <q-item-label header> Event Notifications </q-item-label>
         <EventNotifications></EventNotifications>
       </q-list>
     </q-drawer>
 
     <q-drawer v-model="rightDrawerOpen" side="right" overlay behavior="mobile">
       <q-list>
-        <q-item-label header> Login / Sign Up </q-item-label>
+        <q-item-label header> 로그인 / 회원가입 ( 준비중 )</q-item-label>
         <q-item>
           <q-img
             class="absolute-top"
@@ -56,8 +45,8 @@
               <q-avatar size="56px" class="q-mb-sm">
                 <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
               </q-avatar>
-              <div class="text-weight-bold">thfdk0101</div>
-              <div>@rstoenescu</div>
+              <div class="text-weight-bold">developer - thfdk0101</div>
+              <div>@jtys0316</div>
             </div>
           </q-img>
         </q-item>
@@ -69,19 +58,12 @@
     </q-page-container>
     <q-footer elevated class="bg-white">
       <q-tabs dense class="text-black">
-        <q-route-tab exact to="/search" icon="search" label="Search" no-caps />
-        <q-route-tab exact to="/qr" icon="qr_code" label="QR code" no-caps="" />
+        <q-route-tab exact to="/" icon="search" label="Store" no-caps />
         <q-route-tab
           exact
-          to="myWallet"
-          icon="wallet"
-          label="My Wallet"
-          no-caps />
-        <q-route-tab
-          exact
-          to="myInfo"
+          to="/check"
           icon="info"
-          label="My Info"
+          label="My Order"
           no-caps="" /></q-tabs
     ></q-footer>
   </q-layout>

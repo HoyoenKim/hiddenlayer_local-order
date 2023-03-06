@@ -1,73 +1,34 @@
 <template>
-  <q-list bordered class="rounded-borders" style="max-width: 600px">
-    <q-item-label header>Google Inbox style</q-item-label>
-
+  <q-list bordered class="rounded-borders">
+    <q-item-label header>Event Notifications </q-item-label>
+    <q-separator />
     <q-item>
       <q-item-section avatar top>
-        <q-icon name="account_tree" color="black" size="34px" />
+        <q-icon
+          name="fa-brands fa-instagram"
+          tag="a"
+          href="https://www.instagram.com/gistcoffeebean/"
+          color="pink-4"
+        />
+        <q-icon
+          class="q-pt-sm"
+          name="fa-solid fa-comment"
+          tag="a"
+          href="https://pf.kakao.com/_bBWJxj"
+          color="yellow-7"
+        />
       </q-item-section>
-
-      <q-item-section top class="col-2 gt-sm">
-        <q-item-label class="q-mt-sm">GitHub</q-item-label>
-      </q-item-section>
-
       <q-item-section top>
-        <q-item-label lines="1">
-          <span class="text-weight-medium">[quasarframework/quasar]</span>
-          <span class="text-grey-8"> - GitHub repository</span>
-        </q-item-label>
-        <q-item-label caption lines="1">
-          @rstoenescu in #3: > Generic type parameter for props
+        <q-item-label>
+          <div class="text-weight-medium">재야의 커피</div>
+          <div caption class="text-caption text-grey">@gistcoffeebean</div>
         </q-item-label>
         <q-item-label
           lines="1"
-          class="q-mt-xs text-body2 text-weight-bold text-primary text-uppercase"
+          class="q-pt-xs text-body2 text-weight-bold text-blue"
         >
-          <span class="cursor-pointer">Open in GitHub</span>
+          <span class="cursor-pointer">( ~ 3/2) 재야의 커피 판매 개시</span>
         </q-item-label>
-      </q-item-section>
-
-      <q-item-section top side>
-        <div class="text-grey-8 q-gutter-xs">
-          <q-btn class="gt-xs" size="12px" flat dense round icon="delete" />
-          <q-btn class="gt-xs" size="12px" flat dense round icon="done" />
-          <q-btn size="12px" flat dense round icon="more_vert" />
-        </div>
-      </q-item-section>
-    </q-item>
-
-    <q-separator spaced />
-
-    <q-item>
-      <q-item-section avatar top>
-        <q-icon name="account_tree" color="black" size="34px" />
-      </q-item-section>
-
-      <q-item-section top class="col-2 gt-sm">
-        <q-item-label class="q-mt-sm">GitHub</q-item-label>
-      </q-item-section>
-      <q-item-section top>
-        <q-item-label lines="1">
-          <span class="text-weight-medium">[quasarframework/quasar]</span>
-          <span class="text-grey-8"> - GitHub repository</span>
-        </q-item-label>
-        <q-item-label caption lines="1">
-          @rstoenescu in #1: > The build system
-        </q-item-label>
-        <q-item-label
-          lines="1"
-          class="q-mt-xs text-body2 text-weight-bold text-primary text-uppercase"
-        >
-          <span class="cursor-pointer">Open in GitHub</span>
-        </q-item-label>
-      </q-item-section>
-
-      <q-item-section top side>
-        <div class="text-grey-8 q-gutter-xs">
-          <q-btn class="gt-xs" size="12px" flat dense round icon="delete" />
-          <q-btn class="gt-xs" size="12px" flat dense round icon="done" />
-          <q-btn size="12px" flat dense round icon="more_vert" />
-        </div>
       </q-item-section>
     </q-item>
   </q-list>
