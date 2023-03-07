@@ -275,8 +275,8 @@
 
 <script>
 import { defineComponent, ref, computed } from "vue";
-import { useCurrentStore } from "stores/currentStore";
-import { useCartStore } from "stores/shoppingCart";
+import { useStoreInfo } from "src/stores/storeInfo";
+import { useCartStore } from "src/stores/cartInfo";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
@@ -288,7 +288,7 @@ export default defineComponent({
     //CoffeeCard,
   },
   setup() {
-    const store = useCurrentStore();
+    const store = useStoreInfo();
     // use destructuring to use the store in the template
     const { storeName } = storeToRefs(store); // state and getters need "storeToRefs"
     const { increment } = store; // actions can be destructured directly

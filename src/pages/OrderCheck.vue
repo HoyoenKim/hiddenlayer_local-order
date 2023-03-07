@@ -59,7 +59,7 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-import { useCartStore } from "stores/shoppingCart";
+import { useCartStore } from "src/stores/cartInfo";
 import { useOrderCheckStore } from "stores/orderCheck";
 import { useQuasar } from "quasar";
 

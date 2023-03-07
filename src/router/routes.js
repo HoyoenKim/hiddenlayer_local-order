@@ -7,6 +7,12 @@ const routes = [
     ],
   },
   {
+    path: "/brand",
+    component: () => import("layouts/BrandLayout.vue"),
+    children: [{ path: "", component: () => import("pages/BrandPage.vue") }],
+    props: true,
+  },
+  {
     path: "/event",
     component: () => import("layouts/MainLayout.vue"),
     children: [
@@ -38,11 +44,7 @@ const routes = [
     component: () => import("layouts/MainLayout.vue"),
     children: [{ path: "", component: () => import("pages/MyInfo.vue") }],
   },
-  {
-    path: "/brand",
-    component: () => import("layouts/BrandLayout.vue"),
-    children: [{ path: "", component: () => import("pages/BrandPage.vue") }],
-  },
+
   {
     path: "/menu",
     component: () => import("layouts/BrandLayout.vue"),

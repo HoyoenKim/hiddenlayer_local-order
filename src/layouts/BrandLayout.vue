@@ -204,7 +204,7 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted } from "vue";
-import { useCartStore } from "stores/shoppingCart";
+import { useCartStore } from "src/stores/cartInfo";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 import EventNotifications from "src/components/EventNotifications.vue";

@@ -287,7 +287,7 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
-import { useCurrentStore } from "stores/currentStore";
+import { useStoreInfo } from "src/stores/storeInfo";
 import CoffeeCard from "components/CoffeeCard.vue";
 
 export default defineComponent({
@@ -295,7 +295,7 @@ export default defineComponent({
   components: {},
   setup() {
     const router = useRouter();
-    const store = useCurrentStore();
+    const store = useStoreInfo();
 
     function toMenuPage(storeName) {
       store.setStoreName(storeName);

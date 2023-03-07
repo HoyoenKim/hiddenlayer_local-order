@@ -12,7 +12,7 @@
             class="bg-white text-black"
           >
             <q-route-tab :ripple="false" no-caps to="/" exact
-              >Local Order</q-route-tab
+              >LocalOrder</q-route-tab
             >
           </q-tabs>
         </q-toolbar-title>
