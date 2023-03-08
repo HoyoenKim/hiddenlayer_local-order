@@ -3,25 +3,19 @@ import { api } from "boot/axios";
 
 export const useOrderCheckStore = defineStore("shoppingCart", {
   state: () => ({
-    name: "",
-    orderList: [],
+    orders: [],
   }),
 
   getters: {},
 
   actions: {
     checkOrder(name, phone, password) {
-      var query = "/order/checkOrder";
-      this.name = name;
+      var query = "/order/selectOrder/" + name + "/" + phone + "/" + password;
       api
-        .post(query, {
-          name: name,
-          phone: phone,
-          password: password,
-        })
+        .get(query)
         .then((response) => {
           console.log(response.data);
-          this.orderList = response.data;
+          this.orders = response.data.orders;
         })
         .catch((error) => {});
     },

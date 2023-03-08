@@ -1,88 +1,79 @@
 <template>
   <q-page class="flex-center">
+    <!--<div>
+      {{ cart }}
+    </div>-->
     <q-toolbar>
-      <q-btn flat dense>
-        <q-icon name="arrow_back" @click="toMenuPage()" />
+      <q-btn flat dense @click="toMenuPage()">
+        <q-icon name="arrow_back" />
       </q-btn>
       <q-toolbar-title class="q-pt-xs"> 장바구니 </q-toolbar-title>
       <q-btn flat dense @click="toHomePage()">
         <q-icon name="home" />
       </q-btn>
     </q-toolbar>
+
     <q-expansion-item
       default-opened
-      v-model="expanded1"
-      header-class="bg-grey-4"
+      label="주문 내역"
       class="q-pb-md"
+      header-class="bg-grey-4"
     >
-      <template v-slot:header>
-        <q-item-section class="text-h6 q-pa-sm">
-          <q-item-label>주문 내역</q-item-label>
-        </q-item-section>
-      </template>
       <div
         class="fit column wrap justify-center items-center content-center q-gutter-md q-pt-md"
       >
         <q-card
-          v-for="value in cart"
-          :key="value"
-          class="my-card"
+          v-for="(menu, menuId) in cart"
+          :key="menuId"
+          class="cart-card"
           flat
           bordered
         >
-          <q-card-section horizontal class="text-h6 text-bold">
+          <q-card-section horizontal class="q-pt-sm">
             <q-item class="fit">
               <q-item-section>
-                {{ value.storeName }}
+                <q-item-label class="text-subtitle1 text-bold">{{
+                  menu.menu_info.menu_title
+                }}</q-item-label>
+                <q-item-label class="q-pl-sm" caption>{{
+                  menu.store_title
+                }}</q-item-label>
               </q-item-section>
               <q-item-section avatar="">
                 <q-btn
                   flat
                   size="md"
                   icon="delete"
-                  @click="deleteCart(value.title)"
+                  @click="deleteCart(menuId)"
                 ></q-btn> </q-item-section
             ></q-item>
           </q-card-section>
           <q-separator />
+          <q-card-section
+            v-for="label in menu.menu_option_label"
+            :key="label"
+            class="q-px-xs q-pb-none"
+          >
+            <q-item dense class="fit">
+              <q-item-section class="text-subtitle1">
+                <q-item-label>{{ Object.keys(label)[0] }}</q-item-label>
+                <q-item-label class="q-pl-sm" caption>{{
+                  Object.values(label)[0]
+                }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-card-section>
           <q-card-section class="q-px-xs">
-            <q-item dense class="fit">
-              <q-item-section class="text-subtitle1">
-                <q-item-label>{{ value.title }}</q-item-label>
-                <q-item-label class="q-pl-sm" caption
-                  >{{ value.price }} {{ value.priceUnit }}</q-item-label
-                >
-              </q-item-section>
-            </q-item>
-          </q-card-section>
-          <q-card-section class="q-pt-none q-px-xs">
-            <q-item dense class="fit">
-              <q-item-section class="text-subtitle1">
-                <q-item-label>HOT / ICE</q-item-label>
-                <q-item-label class="q-pl-sm" caption>{{
-                  value.tempOption
-                }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-card-section>
-          <q-card-section class="q-pt-none q-px-xs">
-            <q-item dense class="fit">
-              <q-item-section class="text-subtitle1">
-                <q-item-label>커피 농도</q-item-label>
-                <q-item-label class="q-pl-sm" caption>{{
-                  value.denseOption
-                }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-card-section>
-          <q-card-section class="q-pt-none q-px-xs">
             <q-item dense class="fit">
               <q-item-section class="text-subtitle1">
                 <q-item-label>총 가격</q-item-label>
                 <q-item-label class="q-pl-sm" caption
-                  >{{ value.price * value.number }}
-                  {{ value.priceUnit }}</q-item-label
-                >
+                  >{{
+                    menu.menu_option_select.menu_price *
+                    menu.menu_option_select.number
+                  }}
+                  원
+                </q-item-label>
               </q-item-section>
               <q-item-section side class="text-black">
                 <q-item-label>
@@ -93,19 +84,21 @@
                     outline
                     icon="arrow_downward"
                     @click="
-                      if (value.number > 1) {
-                        value.number--;
+                      if (menu.menu_option_select.number > 1) {
+                        menu.menu_option_select.number--;
                       }
                     "
                   ></q-btn>
-                  <span class="q-px-lg">{{ value.number }}</span>
+                  <span class="q-px-lg">{{
+                    menu.menu_option_select.number
+                  }}</span>
                   <q-btn
                     round
                     size="sm"
                     :ripple="false"
                     outline
                     icon="arrow_upward"
-                    @click="value.number++"
+                    @click="menu.menu_option_select.number++"
                   ></q-btn>
                 </q-item-label>
               </q-item-section>
@@ -114,22 +107,18 @@
         </q-card>
       </div>
     </q-expansion-item>
+
     <q-expansion-item
       default-opened
-      v-model="expanded1"
-      header-class="bg-grey-4"
+      label="주문자 정보"
       class="q-pb-md"
+      header-class="bg-grey-4"
     >
-      <template v-slot:header>
-        <q-item-section class="text-h6 q-pa-sm">
-          <q-item-label>주문자 정보</q-item-label>
-        </q-item-section>
-      </template>
       <div
         class="fit column wrap justify-center items-center content-center q-gutter-md q-pt-md"
       >
         <q-form>
-          <q-card flat bordered class="my-card">
+          <q-card flat bordered class="cart-card">
             <q-card-section class="q-px-xs q-pb-none">
               <q-item dense class="fit">
                 <q-item-section class="text-subtitle1">
@@ -213,26 +202,21 @@
                 ]"
               />
             </q-card-section>
-            <q-separator />
           </q-card>
         </q-form>
       </div>
     </q-expansion-item>
+
     <q-expansion-item
       default-opened
-      v-model="expanded1"
-      header-class="bg-grey-4"
+      label="주문 정보"
       class="q-pb-md"
+      header-class="bg-grey-4"
     >
-      <template v-slot:header>
-        <q-item-section class="text-h6 q-pa-sm">
-          <q-item-label>주문 정보</q-item-label>
-        </q-item-section>
-      </template>
       <div
         class="fit column wrap justify-center items-center content-center q-gutter-md q-pt-md"
       >
-        <q-card flat bordered class="my-card">
+        <q-card flat bordered class="cart-card">
           <q-card-section class="q-px-xs">
             <q-item dense class="fit">
               <q-item-section class="text-subtitle1">
@@ -275,84 +259,76 @@
 
 <script>
 import { defineComponent, ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
 import { useStoreInfo } from "src/stores/storeInfo";
 import { useCartStore } from "src/stores/cartInfo";
-import { storeToRefs } from "pinia";
-import { useRouter } from "vue-router";
-import { useQuasar } from "quasar";
-import CoffeeCard from "components/CoffeeCard.vue";
 
 export default defineComponent({
   name: "CartPage",
-  components: {
-    //CoffeeCard,
-  },
+  components: {},
   setup() {
-    const store = useStoreInfo();
-    // use destructuring to use the store in the template
-    const { storeName } = storeToRefs(store); // state and getters need "storeToRefs"
-    const { increment } = store; // actions can be destructured directly
-
+    // routing
     const router = useRouter();
 
-    function toMenuPage() {
-      router.push({ path: "/Menu" });
-    }
-
-    function toHomePage() {
-      router.push({ path: "/" });
-    }
-
+    // cart information
     const cartStore = useCartStore();
-    // use destructuring to use the store in the template
-    const { cart, name, phone, password, roomNumber } = storeToRefs(cartStore); // state and getters need "storeToRefs"
-    const { insertCart, deleteCart } = cartStore; // actions can be destructured directly
-
-    const cartLength = computed(() => {
-      return Object.keys(cart.value).length;
-    });
-    const existCart = computed(() => {
-      if (Object.keys(cart.value).length == 0) {
-        return false;
-      }
-      return true;
-    });
-
+    const { cart, name, phone, password, roomNumber } = storeToRefs(cartStore);
+    const { deleteCart } = cartStore;
+    // getter error why?
     const totalPrice = computed(() => {
       var price = 0;
-      for (const [key, value] of Object.entries(cart.value)) {
-        price += value.price * value.number;
+      for (const [menuId, menu] of Object.entries(cart.value)) {
+        // TODO 추가 옵션으로 추가 비용 생기면 어떻게 계산?
+        price +=
+          menu.menu_option_select.menu_price * menu.menu_option_select.number;
       }
       return price;
     });
 
+    // to home page
+    function toHomePage() {
+      router.push({ path: "/" });
+    }
+
+    // to menu page
+    function toMenuPage() {
+      router.push({ path: "/menu" });
+    }
+
+    // to deserialize the json string
+    function ds(string) {
+      return JSON.parse(string);
+    }
+
     return {
-      toMenuPage,
       toHomePage,
-      cartLength,
-      existCart,
-      totalPrice,
+      toMenuPage,
+
       cart,
       deleteCart,
+      ds,
+
       name,
       phone,
       password,
-      isPwd: ref(true),
       roomNumber,
-      expanded1: ref(true),
-      expanded2: ref(true),
+      isPwd: ref(true),
+
       payment: "account",
-      paymentOptions: [{ label: "계좌 이체", value: "account" }],
+      paymentOptions: [
+        {
+          label: "계좌 이체",
+          value: "account",
+        },
+      ],
+      totalPrice,
     };
   },
 });
 </script>
 <style lang="sass" scoped>
-.my-item
-  width: 95vw
-  max-width: 500px
-
-.my-card
+.cart-card
   width: 95vw
   max-width: 500px
 </style>

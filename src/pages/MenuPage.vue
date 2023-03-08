@@ -1,10 +1,16 @@
 <template>
   <q-page class="flex-center">
+    <!--<div>
+      {{ menuTables }}
+      {{ menus }}
+    </div>-->
     <q-toolbar>
       <q-btn flat dense @click="toBrandPage()">
         <q-icon name="arrow_back" />
       </q-btn>
-      <q-toolbar-title class="q-pt-xs"> {{ storeName }} 메뉴 </q-toolbar-title>
+      <q-toolbar-title class="q-pt-xs">
+        {{ currentStore.store_title }} 메뉴
+      </q-toolbar-title>
       <q-btn flat dense @click="toHomePage()">
         <q-icon name="home" />
       </q-btn>
@@ -17,48 +23,41 @@
     </q-toolbar>
     <q-expansion-item
       default-opened
-      v-model="expanded1"
       header-class="bg-grey-4"
+      v-for="menuTable in menuTables"
+      :key="menuTable"
+      :label="menuTable.menu_table_title"
+      :caption="menuTable.menu_table_subtitle"
     >
-      <template v-slot:header>
-        <q-item-section avatar>
-          <q-avatar icon="star" color="grey-4" text-color="red" />
-        </q-item-section>
-
-        <q-item-section>
-          <q-item-label>사장님 추천</q-item-label>
-          <q-item-label caption>이번주 커피</q-item-label></q-item-section
-        >
-      </template>
       <template v-slot:default>
         <div
-          class="fit column wrap justify-center items-center content-center q-gutter-sm q-py-sm"
+          class="fit column wrap justify-center items-center content-center q-gutter-md q-py-md"
         >
           <q-card
-            v-for="i in [0, 1]"
-            :key="i"
-            class="my-card"
+            v-for="menuInfo in menuTable.menu_info"
+            :key="menuInfo"
+            @click="openMenuDialog(menuInfo.menu_id)"
+            class="menu-card"
             flat
             bordered
-            @click="openMenuDialog(i)"
           >
             <q-card-section horizontal>
               <q-card-section class="q-pt-xs">
-                <div class="text-overline">
-                  {{ menuList[i].price }}{{ menuList[i].priceUnit }}
-                </div>
+                <div class="text-overline">{{ menuInfo.menu_price }} 원</div>
                 <div class="text-h5 q-mt-sm q-mb-xs q-pb-sm">
-                  {{ menuList[i].title }}
+                  {{ menuInfo.menu_title }}
                 </div>
                 <div class="text-caption text-grey">
-                  {{ menuList[i].explainDetail }}
+                  {{ menuInfo.menu_description }}
                 </div>
               </q-card-section>
-
               <q-card-section class="col-5 flex flex-center">
                 <q-img
                   class="rounded-borders"
-                  src="https://cdn.quasar.dev/img/parallax2.jpg"
+                  :src="
+                    baseURL + '/static/images/menu/' + menuInfo.menu_id + '.jpg'
+                  "
+                  style="max-height: 300px"
                 />
               </q-card-section>
             </q-card-section>
@@ -66,153 +65,78 @@
         </div>
       </template>
     </q-expansion-item>
-    <q-expansion-item
-      default-opened
-      v-model="expanded2"
-      header-class="bg-grey-4"
-    >
-      <template v-slot:header>
-        <q-item-section>
-          <q-item-label>블랜디드 원두</q-item-label>
-          <q-item-label caption></q-item-label
-        ></q-item-section>
-      </template>
-      <template v-slot:default>
-        <div
-          class="fit column wrap justify-center items-center content-center q-gutter-sm q-py-sm"
-        >
-          <q-card class="my-card" flat bordered @click="openMenuDialog(0)">
-            <q-card-section horizontal>
-              <q-card-section class="q-pt-xs">
-                <div class="text-overline">
-                  {{ menuList[0].price }}{{ menuList[0].priceUnit }}
-                </div>
-                <div class="text-h5 q-mt-sm q-mb-xs q-pb-sm">
-                  {{ menuList[0].title }}
-                </div>
-                <div class="text-caption text-grey">
-                  {{ menuList[0].explainDetail }}
-                </div>
-              </q-card-section>
-
-              <q-card-section class="col-5 flex flex-center">
-                <q-img
-                  class="rounded-borders"
-                  src="https://cdn.quasar.dev/img/parallax2.jpg"
-                />
-              </q-card-section>
-            </q-card-section>
-          </q-card>
-        </div>
-      </template>
-    </q-expansion-item>
-    <q-expansion-item
-      default-opened
-      v-model="expanded3"
-      header-class="bg-grey-4"
-    >
-      <template v-slot:header>
-        <q-item-section>
-          <q-item-label>고급 원두</q-item-label>
-          <q-item-label caption>1일 10잔 한정판매</q-item-label></q-item-section
-        >
-      </template>
-      <template v-slot:default>
-        <div
-          class="fit column wrap justify-center items-center content-center q-gutter-sm q-py-sm"
-        >
-          <q-card class="my-card" flat bordered @click="openMenuDialog(1)">
-            <q-card-section horizontal>
-              <q-card-section class="q-pt-xs">
-                <div class="text-overline">
-                  {{ menuList[1].price }}{{ menuList[1].priceUnit }}
-                </div>
-                <div class="text-h5 q-mt-sm q-mb-xs q-pb-sm">
-                  {{ menuList[1].title }}
-                </div>
-                <div class="text-caption text-grey">
-                  {{ menuList[1].explainDetail }}
-                </div>
-              </q-card-section>
-
-              <q-card-section class="col-5 flex flex-center">
-                <q-img
-                  class="rounded-borders"
-                  src="https://cdn.quasar.dev/img/parallax2.jpg"
-                />
-              </q-card-section>
-            </q-card-section>
-          </q-card>
-        </div>
-      </template>
-    </q-expansion-item>
-    <q-dialog v-model="dialog" position="bottom">
+    <q-dialog v-model="menuDetailDialog" position="bottom">
       <q-card style="width: 60vw; max-width: 500px">
-        <q-card-section horizontal>
+        <q-card-section horizontal class="justify-end bg-grey-4">
+          <q-btn
+            size="sm"
+            icon="close"
+            :ripple="false"
+            round
+            flat
+            v-close-popup
+          ></q-btn>
+        </q-card-section>
+        <q-card-section horizontal class="q-pt-md">
           <q-img
             class="rounded-borders"
-            src="https://cdn.quasar.dev/img/parallax2.jpg"
+            :src="baseURL + '/static/images/menu/' + currentMenuId + '.jpg'"
+            style="max-height: 300px"
+            fit="scale-down"
           />
         </q-card-section>
+
         <q-card-section class="q-pb-none">
           <q-card flat bordered class="q-pa-md text-center">
             <q-card-section class="text-h6">
-              {{ showMenu.title }}
+              {{ menus[currentMenuId].menu_title }}
             </q-card-section>
             <q-separator />
 
             <q-card-section class="text-caption text-grey q-pb-none">
-              {{ showMenu.explainDetail }}
+              {{ menus[currentMenuId].menu_description }}
             </q-card-section>
           </q-card>
         </q-card-section>
-        <q-card-section class="q-pb-xs">
-          <div class="text-bold q-pb-xs">가격</div>
-          <q-option-group
-            v-model="showMenu.priceOption"
-            :options="showMenu.priceOptions"
-            color="primary"
-        /></q-card-section>
-        <q-separator />
-        <q-card-section class="q-pb-xs">
-          <div class="text-bold q-pb-xs">HOT / ICE</div>
-          <q-option-group
-            v-model="showMenu.tempOption"
-            :options="showMenu.tempOptions"
-            color="primary"
-        /></q-card-section>
-        <q-separator />
-        <q-card-section class="q-pb-xs">
-          <div class="text-bold q-pb-xs">커피 농도</div>
-          <q-option-group
-            v-model="showMenu.denseOption"
-            :options="showMenu.denseOptions"
-            color="primary"
-        /></q-card-section>
-        <q-separator />
-        <q-card-section class="q-pb-md">
-          <div class="text-bold q-pb-sm">수량</div>
-          <q-btn
-            round
-            size="sm"
-            :ripple="false"
-            outline
-            icon="arrow_downward"
-            @click="
-              if (showMenu.number > 1) {
-                showMenu.number--;
-              }
-            "
-          ></q-btn>
-          <span class="q-px-lg">{{ showMenu.number }}</span>
-          <q-btn
-            round
-            size="sm"
-            :ripple="false"
-            outline
-            icon="arrow_upward"
-            @click="showMenu.number++"
-          ></q-btn>
+        <div
+          v-for="(menuOption, index) in ds(menus[currentMenuId].menu_options)"
+          :key="index"
+        >
+          <q-card-section class="q-pb-xs">
+            <div class="text-bold q-pb-xs">{{ menuOption[0] }}</div>
+            <q-option-group
+              v-model="currentMenuOption.menu_option_values[index]"
+              :options="menuOption.slice(1)"
+              color="primary"
+            />
+          </q-card-section>
+          <q-separator />
+        </div>
+        <q-card-section class="q-pb-md row wrap justify-between">
+          <div class="text-bold q-pt-xs">수량</div>
+          <div class="">
+            <q-btn
+              round
+              size="sm"
+              :ripple="false"
+              outline
+              icon="arrow_downward"
+              @click="
+                if (currentMenuOption.number > 1) {
+                  currentMenuOption.number--;
+                }
+              "
+            ></q-btn>
+            <span class="q-px-lg">{{ currentMenuOption.number }}</span>
+            <q-btn
+              round
+              size="sm"
+              :ripple="false"
+              outline
+              icon="arrow_upward"
+              @click="currentMenuOption.number++"
+            ></q-btn>
+          </div>
         </q-card-section>
         <q-separator />
 
@@ -221,7 +145,7 @@
             flat
             v-close-popup
             class="text-white bg-blue"
-            @click="addToCart"
+            @click="addToCart()"
           >
             카트에 담기
           </q-btn>
@@ -232,127 +156,28 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
+import { api, baseURL } from "boot/axios";
 import { useStoreInfo } from "src/stores/storeInfo";
 import { useCartStore } from "src/stores/cartInfo";
-import { storeToRefs } from "pinia";
-import { useRouter } from "vue-router";
-import { useQuasar } from "quasar";
-import CoffeeCard from "components/CoffeeCard.vue";
 
 export default defineComponent({
   name: "MenuPage",
-  components: {
-    //CoffeeCard,
-  },
+  components: {},
   setup() {
-    const store = useStoreInfo();
-    // use destructuring to use the store in the template
-    const { storeName } = storeToRefs(store); // state and getters need "storeToRefs"
-    const { increment } = store; // actions can be destructured directly
-
+    // routing
     const router = useRouter();
 
-    function toBrandPage() {
-      router.push({ path: "/brand" });
-    }
+    // store Information
+    const storeInfo = useStoreInfo();
+    const { currentStore } = storeToRefs(storeInfo);
 
-    function toHomePage() {
-      router.push({ path: "/" });
-    }
-
-    function toCartPage() {
-      router.push({ path: "/cart" });
-    }
-
-    const balance = {
-      overline: "Option One",
-      title: "밸런스 블랜딩",
-      price: "3500",
-      priceUnit: "원",
-      explainLink: "https://typer.notion.site/e22619aaa3244bef811a0eb97529a7e3",
-      explainDetail:
-        "국내 정상급 바리스타가 만든 최고급 품종의 게이샤 원두 그리고 게이샤 원두와 최적의 조화를 이루는 헤리움 품종의 원두를 섞어 내린 고급 블랜디드 커피입니다.",
-      priceOptions: [
-        {
-          label: "3500 원",
-          value: "default",
-        },
-      ],
-      priceOption: "default",
-      tempOptions: [
-        {
-          label: "Hot",
-          value: "hot",
-        },
-        {
-          label: "Ice",
-          value: "ice",
-        },
-      ],
-      tempOption: "hot",
-      denseOptions: [
-        {
-          label: "진하게",
-          value: "high",
-        },
-        {
-          label: "연하게",
-          value: "low",
-        },
-      ],
-      denseOption: "high",
-      number: 1,
-    };
-
-    const single = {
-      overline: "Option Two",
-      title: "싱글 오리진",
-      price: "4000",
-      priceUnit: "원",
-      explainLink: "https://typer.notion.site/cd9823651223426e80d146d16f37d133",
-      explainDetail:
-        "국내 정상급 로스터가 최고급 생두를 선점하고 로스팅하여 만든 원두 입니다. 단 한 종류의 원두만을 최고급 원두를 골라내 원두의 맛을 극한까지 끌어내기 위한 노력을 기울였습니다.",
-      priceOptions: [
-        {
-          label: "4000 원",
-          value: "default",
-        },
-      ],
-      priceOption: "default",
-      tempOptions: [
-        {
-          label: "Hot",
-          value: "hot",
-        },
-        {
-          label: "Ice",
-          value: "ice",
-        },
-      ],
-      tempOption: "hot",
-      denseOptions: [
-        {
-          label: "진하게",
-          value: "high",
-        },
-        {
-          label: "연하게",
-          value: "low",
-        },
-      ],
-      denseOption: "high",
-      number: 1,
-    };
-
-    const menuList = ref([balance, single]);
-    var dialog = ref(false);
-    var showMenu = ref({});
-
+    // cart infromation
     const cartStore = useCartStore();
-    // use destructuring to use the store in the template
-    const { cart } = storeToRefs(cartStore); // state and getters need "storeToRefs"
-    const { insertCart, deleteCart } = cartStore; // actions can be destructured directly
+    const { cart } = storeToRefs(cartStore);
+    const { insertCart, resetCart } = cartStore;
 
     const cartLength = computed(() => {
       return Object.keys(cart.value).length;
@@ -364,37 +189,242 @@ export default defineComponent({
       return true;
     });
 
+    // Request menu table and its menus from server.
+    var menuTables = ref({});
+    var menus = ref({});
+    onMounted(async () => {
+      const menuTableIds = ds(currentStore.value.menu_ids);
+
+      // Request all menu tables' infromation from server.
+      for (const menuTableId of menuTableIds) {
+        var query = "menu/readMenuTable/" + menuTableId;
+        await api.get(query).then(async (response) => {
+          var menu_table_info = response.data.menuTable[0];
+          var menu_table_id = menu_table_info.menu_table_id;
+          menuTables.value[menu_table_id] = menu_table_info;
+          menuTables.value[menu_table_id]["menu_info"] = {};
+        });
+      }
+
+      // Requst all menus' information from server.
+      for (const [menuTableId, menuTableInfo] of Object.entries(
+        menuTables.value
+      )) {
+        const menuIds = ds(menuTableInfo.menu_ids);
+        var uniqueCheck = {};
+        for (const menuId in menuIds) {
+          // need to TODO unique check!
+          var query = "menu/readMenu/" + menuId;
+          if (!(menuId in uniqueCheck)) {
+            await api.get(query).then((response) => {
+              var menu_info = response.data.menu[0];
+              var menu_id = menu_info.menu_id;
+              var menu_table_ids = ds(menu_info.menu_table_ids);
+
+              for (const menu_table_id of menu_table_ids) {
+                menuTables.value[menu_table_id]["menu_info"][menu_id] =
+                  menu_info;
+              }
+              menus.value[menu_id] = menu_info;
+            });
+            uniqueCheck[menuId] = 1;
+          }
+        }
+      }
+    });
+
+    // to store page
+    function toHomePage() {
+      router.push({ path: "/" });
+    }
+
+    // to brand page
+    function toBrandPage() {
+      router.push({ path: "/brand" });
+    }
+
+    // to menu page
+    function toCartPage() {
+      router.push({ path: "/cart" });
+    }
+
+    // to deserialize the json string
+    function ds(string) {
+      return JSON.parse(string);
+    }
+
+    // select menu to cart
+    var menuDetailDialog = ref(false);
+    var currentMenuId = ref(0);
+    var currentMenuOption = ref({
+      number: 1,
+      menu_option_values: [],
+      menu_price: 0,
+    });
+    function openMenuDialog(menuId) {
+      // initial object
+      menuDetailDialog.value = true;
+      currentMenuId.value = menuId;
+      currentMenuOption.value = {
+        number: 1,
+        menu_option_values: [],
+        menu_price: 0,
+      };
+
+      // add initial options
+      var menu_option_info = ds(menus.value[currentMenuId.value].menu_options);
+      for (const menu_option of menu_option_info) {
+        currentMenuOption.value.menu_option_values.push(menu_option[1].value);
+      }
+    }
+
+    // add menu to cart
+    function addToCart() {
+      // calculate menu total price
+      // TODO 옵션에 따라서 가격이 바뀌는 경우 수정 필요.
+      currentMenuOption.value.menu_price =
+        menus.value[currentMenuId.value].menu_price;
+
+      // find menu label
+      var menu_options = ds(menus.value[currentMenuId.value].menu_options);
+      var menu_option_select_label = [];
+
+      for (var i = 0; i < menu_options.length; i++) {
+        var menu_option = menu_options[i];
+        var menu_option_key = menu_option[0];
+
+        for (var j = 1; j < menu_option.length; j++) {
+          if (
+            menu_option[j].value ==
+            currentMenuOption.value.menu_option_values[i]
+          ) {
+            var inputObejct = {};
+            inputObejct[menu_option_key] = menu_option[j].label;
+            menu_option_select_label.push(inputObejct);
+          }
+        }
+      }
+
+      // set order information
+      var menu_info = {
+        store_title: currentStore.value.store_title,
+        menu_info: menus.value[currentMenuId.value],
+        menu_option_label: menu_option_select_label,
+        menu_option_select: currentMenuOption.value,
+      };
+
+      insertCart(currentMenuId.value, menu_info);
+    }
+
     return {
-      toBrandPage,
+      currentStore,
       toHomePage,
+      toBrandPage,
       toCartPage,
-      storeName,
-      menuList,
-      expanded1: ref(true),
-      expanded2: ref(true),
-      expanded3: ref(true),
-      dialog,
-      showMenu,
       cartLength,
       existCart,
-      openMenuDialog(menuId) {
-        dialog.value = true;
-        showMenu.value = JSON.parse(JSON.stringify(this.menuList[menuId]));
-      },
-      addToCart() {
-        showMenu.value["storeName"] = storeName;
-        insertCart(showMenu.value.title, showMenu.value);
-      },
+
+      menuTables,
+      baseURL,
+      ds,
+      openMenuDialog,
+
+      menuDetailDialog,
+      currentMenuId,
+      menus,
+      currentMenuOption,
+      addToCart,
     };
   },
 });
 </script>
 <style lang="sass" scoped>
-.my-item
+.menu-card
   width: 95vw
   max-width: 500px
-
 .my-card
   width: 95vw
   max-width: 500px
 </style>
+
+<!--
+const balance = {
+  overline: "Option One",
+  title: "밸런스 블랜딩",
+  price: "3500",
+  priceUnit: "원",
+  explainLink: "https://typer.notion.site/e22619aaa3244bef811a0eb97529a7e3",
+  explainDetail:
+    "국내 정상급 바리스타가 만든 최고급 품종의 게이샤 원두 그리고 게이샤 원두와 최적의 조화를 이루는 헤리움 품종의 원두를 섞어 내린 고급 블랜디드 커피입니다.",
+  priceOptions: [
+    {
+      label: "3500 원",
+      value: "default",
+    },
+  ],
+  priceOption: "default",
+  tempOptions: [
+    {
+      label: "Hot",
+      value: "hot",
+    },
+    {
+      label: "Ice",
+      value: "ice",
+    },
+  ],
+  tempOption: "hot",
+  denseOptions: [
+    {
+      label: "진하게",
+      value: "high",
+    },
+    {
+      label: "연하게",
+      value: "low",
+    },
+  ],
+  denseOption: "high",
+  number: 1,
+};
+const single = {
+  overline: "Option Two",
+  title: "싱글 오리진",
+  price: "4000",
+  priceUnit: "원",
+  explainLink: "https://typer.notion.site/cd9823651223426e80d146d16f37d133",
+  explainDetail:
+    "국내 정상급 로스터가 최고급 생두를 선점하고 로스팅하여 만든 원두 입니다. 단 한 종류의 원두만을 최고급 원두를 골라내 원두의 맛을 극한까지 끌어내기 위한 노력을 기울였습니다.",
+  priceOptions: [
+    {
+      label: "4000 원",
+      value: "default",
+    },
+  ],
+  priceOption: "default",
+  tempOptions: [
+    {
+      label: "Hot",
+      value: "hot",
+    },
+    {
+      label: "Ice",
+      value: "ice",
+    },
+  ],
+  tempOption: "hot",
+  denseOptions: [
+    {
+      label: "진하게",
+      value: "high",
+    },
+    {
+      label: "연하게",
+      value: "low",
+    },
+  ],
+  denseOption: "high",
+  number: 1,
+};
+const menuList = ref([balance, single]);
+-->

@@ -1,7 +1,6 @@
 <template>
   <q-page class="flex-center bg-grey-4">
-    <!--<div>{{ currentStore }}</div>
-    <div>{{ brandStory }}</div>-->
+    <!--<div>{{ currentStore }}{{ brandStory }}</div>-->
     <div>
       <q-carousel
         animated
@@ -62,8 +61,8 @@
       <q-card flat class="row">
         <q-card-section horizontal class="col-12 q-pt-sm text-center">
           <q-toolbar>
-            <q-btn flat dense>
-              <q-icon name="arrow_back" @click="toHomePage()" />
+            <q-btn flat dense @click="toHomePage()">
+              <q-icon name="arrow_back" />
             </q-btn>
             <q-toolbar-title class="text-h5 text-bold">
               {{ currentStore.store_title }}
@@ -136,10 +135,11 @@
             header-class="text-primary"
           >
             <div class="scroll bg-grey-4 q-pa-md">
-              <div class="fit row no-wrap q-gutter-md">
+              <div class="fit row no-wrap">
                 <div
                   v-for="story_info in brand_info.story_info"
                   :key="story_info"
+                  class="q-pr-md"
                 >
                   <q-card
                     v-if="story_info.story_type == 0"
@@ -168,7 +168,7 @@
                       </div>
                     </q-card-section>
                   </q-card>
-                  <q-card v-else class="col-8 story-card-2">
+                  <q-card v-else class="col-10 story-card-2">
                     <q-item>
                       <q-item-section avatar>
                         <q-avatar>
@@ -214,9 +214,9 @@
                             story_info.story_id +
                             '.jpg'
                           "
-                          class="rounded-borders"
-                          fit="fit"
-                          :ratio="1"
+                          class="rounded-borders bg-black"
+                          fit="scale-down"
+                          :ratio="16 / 9"
                           style="max-height: 300px"
                           @click="
                             openImageDialog(
@@ -229,16 +229,40 @@
                     </q-card-section>
                     <q-card-section class="q-pa-sm col-12">
                       <div>
-                        <q-chip v-if="isCuration" outline color="green">
+                        <q-chip
+                          v-if="ds(story_info.story_tag)[0] == 1"
+                          outline
+                          dense
+                          square
+                          color="green"
+                        >
                           <div class="text-overline text-green">Curation</div>
                         </q-chip>
-                        <q-chip v-if="isDiscount" outline color="orange">
+                        <q-chip
+                          v-if="ds(story_info.story_tag)[1] == 1"
+                          outline
+                          dense
+                          square
+                          color="orange"
+                        >
                           <div class="text-overline text-orange">Discount</div>
                         </q-chip>
-                        <q-chip v-if="isPromotion" outline color="blue">
+                        <q-chip
+                          v-if="ds(story_info.story_tag)[2] == 1"
+                          outline
+                          dense
+                          square
+                          color="blue"
+                        >
                           <div class="text-overline text-blue">Promotion</div>
                         </q-chip>
-                        <q-chip v-if="isNewMenu" outline color="red">
+                        <q-chip
+                          v-if="ds(story_info.story_tag)[3] == 1"
+                          outline
+                          dense
+                          square
+                          color="red"
+                        >
                           <div class="text-overline text-red">New Menu</div>
                         </q-chip>
                       </div>
@@ -257,16 +281,16 @@
                           flat
                           dense
                           :icon="
-                            expanded
+                            story_info.expanded
                               ? 'keyboard_arrow_up'
                               : 'keyboard_arrow_down'
                           "
-                          @click="expanded = !expanded"
+                          @click="story_info.expanded = !story_info.expanded"
                         />
                       </div>
                     </q-card-actions>
                     <q-slide-transition class="col-12">
-                      <div v-show="expanded">
+                      <div v-show="story_info.expanded">
                         <q-separator />
                         <q-card-section class="text-subitle2">
                           {{ story_info.story_description }}
@@ -460,12 +484,12 @@ export default defineComponent({
       return true;
     });
 
-    // Request brand and its story from server.
+    // Request brand and its stories from server.
     var brandStory = ref({});
     onMounted(async () => {
       const brandIds = ds(currentStore.value.brand_ids);
 
-      // Request all brand infromation from server.
+      // Request all brands' infromation from server.
       for (const brandId of brandIds) {
         var query = "brand/readBrand/" + brandId;
         await api.get(query).then((response) => {
@@ -477,14 +501,15 @@ export default defineComponent({
         });
       }
 
-      // Request all story infromation from server.
+      // Request all stories' infromation from server.
       for (const brandId of brandIds) {
-        var query = "brand/readStory/" + brandId;
+        var query = "brand/readAllStory/" + brandId;
         await api.get(query).then((response) => {
           var stories = response.data.stories;
           for (var story_info of stories) {
             var brand_id = story_info.brand_id;
             var story_id = story_info.story_id;
+            story_info["expanded"] = ref(false);
             brandStory.value[brand_id]["story_info"][story_id] = story_info;
           }
         });
@@ -527,9 +552,11 @@ export default defineComponent({
       baseURL,
 
       currentStore,
-      toMenuPage,
       toHomePage,
+      toMenuPage,
       toCartPage,
+      cartLength,
+      existCart,
       storeInfoTab: ref("brand"),
 
       brandStory,
@@ -560,9 +587,6 @@ export default defineComponent({
       storyTitle1: ref("특별 Event - 원두 큐레이션"),
       storySubTitle1: ref("사용자 맞춤 원두 큐레이션"),
       story1: ref("주문 내역을 바탕을 원두를 추천해 드립니다."),
-
-      cartLength,
-      existCart,
     };
   },
 });
@@ -577,5 +601,5 @@ export default defineComponent({
 .story-card
   width: 300px
 .story-card-2
-  width: 400px
+  min-width: 300px
 </style>

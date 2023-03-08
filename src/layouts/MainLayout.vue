@@ -69,20 +69,22 @@
   </q-layout>
 </template>
 
-<!--<q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
-      <q-list>
-        <q-item-label header> Related Links </q-item-label>
-
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
-    </q-drawer>-->
+<!--
+<q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
+  <q-list>
+    <q-item-label header> Related Links </q-item-label>
+    <EssentialLink
+      v-for="link in essentialLinks"
+      :key="link.title"
+      v-bind="link"
+    />
+  </q-list>
+</q-drawer>
+-->
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
+import { useStoreInfo } from "src/stores/storeInfo";
 import EventNotifications from "src/components/EventNotifications.vue";
 
 const linksList = [
@@ -108,12 +110,19 @@ const linksList = [
 
 export default defineComponent({
   name: "MainLayout",
-
   components: {
     EventNotifications,
   },
-
   setup() {
+    // store information
+    const storeInfo = useStoreInfo();
+    const { setAllStores, setAllMenus } = storeInfo;
+
+    onMounted(() => {
+      setAllStores();
+      setAllMenus();
+    });
+
     const leftDrawerOpen = ref(false);
     const rightDrawerOpen = ref(false);
 

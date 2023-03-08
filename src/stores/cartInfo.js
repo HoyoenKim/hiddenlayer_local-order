@@ -12,7 +12,6 @@ export const useCartStore = defineStore("shoppingCart", {
   }),
 
   getters: {
-    existCart(state) {},
     orderValidation(state) {
       if (
         state.name.length == 0 ||
@@ -30,6 +29,9 @@ export const useCartStore = defineStore("shoppingCart", {
     insertCart(key, value) {
       if (!(key in this.cart)) {
         this.cart[key] = value;
+      } else {
+        this.cart[key].menu_option_select.number =
+          value.menu_option_select.number;
       }
       LocalStorage.set("cart", this.cart);
     },
@@ -41,9 +43,15 @@ export const useCartStore = defineStore("shoppingCart", {
       this.cart = {};
       LocalStorage.set("cart", this.cart);
     },
-    async sendCartToServer() {
-      var query = "/order/orderInsert";
-      await api
+    resetUser() {
+      this.name = "";
+      this.phone = "";
+      this.password = "";
+      this.roomNumber = "";
+    },
+    sendCartToServer() {
+      var query = "/order/createOrder";
+      api
         .post(query, {
           cart: this.cart,
           name: this.name,
@@ -52,19 +60,6 @@ export const useCartStore = defineStore("shoppingCart", {
           roomNumber: this.roomNumber,
         })
         .then((response) => {})
-        .catch((error) => {});
-    },
-    checkOrder(name, phone, password) {
-      var query = "/order/checkOrder";
-      api
-        .post(query, {
-          name: name,
-          phone: phone,
-          password: password,
-        })
-        .then((response) => {
-          console.log(response.data);
-        })
         .catch((error) => {});
     },
   },
