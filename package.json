@@ -1,9 +1,9 @@
 {
-  "name": "localorder",
+  "name": "LocalOrder",
   "version": "0.0.1",
-  "description": "Local Order System",
-  "productName": "localorder",
-  "author": "HoyoenKim <cabinkhy@gist.ac.kr>",
+  "description": "Local Order Frontend",
+  "productName": "LocalOrder",
+  "author": "HoyoenKim <cabinkhy@gm.gist.ac.kr>",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue ./",

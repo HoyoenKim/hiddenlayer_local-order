@@ -489,7 +489,7 @@ export default defineComponent({
     onMounted(async () => {
       const brandIds = ds(currentStore.value.brand_ids);
 
-      // Request all brands' infromation from server.
+      // Request brands' infromation from server.
       for (const brandId of brandIds) {
         var query = "brand/readBrand/" + brandId;
         await api.get(query).then((response) => {

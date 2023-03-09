@@ -120,6 +120,7 @@
 <script>
 import { defineComponent, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
 import { api, baseURL } from "boot/axios";
 import { useStoreInfo } from "src/stores/storeInfo";
 
@@ -132,20 +133,12 @@ export default defineComponent({
 
     // store information
     const storeInfo = useStoreInfo();
+    const { allStores } = storeToRefs(storeInfo);
     const { setCurrentStore } = storeInfo;
 
-    var allStores = ref([]);
-    onMounted(() => {
-      // Request all store infromation from server.
-      var query = "store/allStores";
-      api.get(query).then((response) => {
-        allStores.value = response.data.stores;
-      });
-    });
-
     // to brand page
-    function toBrandPage(storeInfo) {
-      setCurrentStore(storeInfo);
+    function toBrandPage(store_Info) {
+      setCurrentStore(store_Info);
       router.push({ path: "/brand" });
     }
     return {

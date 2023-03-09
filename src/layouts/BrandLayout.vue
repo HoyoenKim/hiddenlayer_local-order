@@ -212,7 +212,7 @@
         주문이 완료되었습니다.
       </q-card-section>
       <q-card-actions align="right" class="bg-white text-teal">
-        <q-btn flat label="확인" v-close-popup @click="toBrandPage" />
+        <q-btn flat label="확인" v-close-popup @click="toCheckPage" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -223,6 +223,7 @@ import { defineComponent, ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useCartStore } from "src/stores/cartInfo";
+import { useOrderCheckStore } from "src/stores/orderCheck";
 
 export default defineComponent({
   name: "BrandLayout",
@@ -236,7 +237,7 @@ export default defineComponent({
 
     // cart information
     const cartStore = useCartStore();
-    const { cart, name, phone, roomNumber, orderValidation } =
+    const { cart, name, phone, roomNumber, password, orderValidation } =
       storeToRefs(cartStore);
     const { sendCartToServer, resetCart, resetUser } = cartStore;
     // getter error why?
@@ -259,9 +260,14 @@ export default defineComponent({
       return price;
     });
 
+    // order information
+    const orderCheckStore = useOrderCheckStore();
+    const { setIsForm, setName, setPhone, setPassword, checkOrder } =
+      orderCheckStore;
+
     // to brand page
-    function toBrandPage() {
-      router.push({ path: "/brand" });
+    function toCheckPage() {
+      router.push({ path: "/check" });
     }
 
     var finishOrder = ref(false);
@@ -269,6 +275,11 @@ export default defineComponent({
     function sendToServer() {
       sendCartToServer();
       resetCart();
+      setName(name);
+      setPhone(phone);
+      setPassword(password);
+      checkOrder();
+      setIsForm(false);
       resetUser();
       finishOrder.value = true;
     }
@@ -297,7 +308,7 @@ export default defineComponent({
       sendToServer,
 
       finishOrder,
-      toBrandPage,
+      toCheckPage,
     };
   },
 });

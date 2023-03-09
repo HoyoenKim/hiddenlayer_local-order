@@ -318,7 +318,7 @@ export default defineComponent({
       payment: "account",
       paymentOptions: [
         {
-          label: "계좌 이체",
+          label: "계좌 이체 (우리은행 류현석 1002-657-201417)",
           value: "account",
         },
       ],

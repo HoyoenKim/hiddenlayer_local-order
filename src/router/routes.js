@@ -4,30 +4,12 @@ const routes = [
     component: () => import("layouts/MainLayout.vue"),
     children: [
       { path: "", component: () => import("src/pages/StorePage.vue") },
+      { path: "/brand", component: () => import("pages/BrandPage.vue") },
+      { path: "/menu", component: () => import("pages/MenuPage.vue") },
+      { path: "/cart", component: () => import("pages/CartPage.vue") },
+      { path: "/check", component: () => import("pages/OrderCheck.vue") },
     ],
   },
-  {
-    path: "/brand",
-    component: () => import("layouts/BrandLayout.vue"),
-    children: [{ path: "", component: () => import("pages/BrandPage.vue") }],
-    props: true,
-  },
-  {
-    path: "/menu",
-    component: () => import("layouts/BrandLayout.vue"),
-    children: [{ path: "", component: () => import("pages/MenuPage.vue") }],
-  },
-  {
-    path: "/cart",
-    component: () => import("layouts/BrandLayout.vue"),
-    children: [{ path: "", component: () => import("pages/CartPage.vue") }],
-  },
-  {
-    path: "/check",
-    component: () => import("layouts/MainLayout.vue"),
-    children: [{ path: "", component: () => import("pages/OrderCheck.vue") }],
-  },
-
   // Always leave this as last one,
   // but you can also remove it
   {

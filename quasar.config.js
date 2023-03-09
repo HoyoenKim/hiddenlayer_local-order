@@ -144,9 +144,9 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: `coffee-order-frontend`,
-        short_name: `coffee-order-frontend`,
-        description: `A Quasar Project`,
+        name: `LocalOrder`,
+        short_name: `LO`,
+        description: `Local Order Frontend`,
         display: "standalone",
         orientation: "portrait",
         background_color: "#ffffff",
@@ -209,7 +209,7 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: "coffee-order-frontend",
+        appId: "local-order",
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain

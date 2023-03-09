@@ -2,7 +2,7 @@ import { LocalStorage, SessionStorage } from "quasar";
 import { defineStore } from "pinia";
 import { api } from "boot/axios";
 
-export const useCartStore = defineStore("shoppingCart", {
+export const useCartStore = defineStore("cartInfo", {
   state: () => ({
     cart: LocalStorage.getItem("cart") || {},
     name: "",
@@ -14,6 +14,7 @@ export const useCartStore = defineStore("shoppingCart", {
   getters: {
     orderValidation(state) {
       if (
+        Object.keys(state.cart).length == 0 ||
         state.name.length == 0 ||
         state.phone.length == 0 ||
         state.password.length == 0 ||

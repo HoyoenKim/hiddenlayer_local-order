@@ -41,6 +41,4 @@ export const useStoreInfo = defineStore("storeInfo", {
         .catch((error) => {});
     },
   },
-
-  persist: true,
 });
