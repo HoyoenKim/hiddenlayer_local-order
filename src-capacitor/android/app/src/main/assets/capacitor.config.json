@@ -1,6 +1,6 @@
 {
   "appId": "hiddenlayer.localorder",
-  "appName": "localorder",
+  "appName": "LocalOrder",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www"
