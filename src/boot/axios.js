@@ -10,7 +10,7 @@ import axios from "axios";
 // 2. 192.168.0.82:22 는 10002 포트로 포워딩 되어 있음
 // BE설정 위해서는 ssh -i pemkey.pem ubuntu@210.109.43.14 -p 10002 로 접속가능
 
-const baseURL = "http://18.118.221.107";
+const baseURL = "http://18.118.221.107:3000";
 
 const api = axios.create({ baseURL: baseURL });
 
