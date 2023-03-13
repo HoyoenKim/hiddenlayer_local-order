@@ -3,16 +3,6 @@
     <!--<div>
       {{ cart }}
     </div>-->
-    <q-toolbar>
-      <q-btn flat dense @click="toMenuPage()">
-        <q-icon name="arrow_back" />
-      </q-btn>
-      <q-toolbar-title class="q-pt-xs"> 장바구니 </q-toolbar-title>
-      <q-btn flat dense @click="toHomePage()">
-        <q-icon name="home" />
-      </q-btn>
-    </q-toolbar>
-
     <q-expansion-item
       default-opened
       label="주문 내역"
@@ -286,25 +276,12 @@ export default defineComponent({
       return price;
     });
 
-    // to home page
-    function toHomePage() {
-      router.push({ path: "/" });
-    }
-
-    // to menu page
-    function toMenuPage() {
-      router.push({ path: "/menu" });
-    }
-
     // to deserialize the json string
     function ds(string) {
       return JSON.parse(string);
     }
 
     return {
-      toHomePage,
-      toMenuPage,
-
       cart,
       deleteCart,
       ds,

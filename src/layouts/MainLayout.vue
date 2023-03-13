@@ -21,6 +21,32 @@
         </q-toolbar-title>
         <q-btn outline round icon="person_outline" @click="toggleRightDrawer" />
       </q-toolbar>
+      <q-toolbar v-else-if="currentPath == '/menu'" class="bg-white text-black">
+        <q-btn flat dense @click="toBrandPage()">
+          <q-icon name="arrow_back" />
+        </q-btn>
+        <q-toolbar-title class="q-pt-xs">
+          {{ currentStore.store_title }} 메뉴
+        </q-toolbar-title>
+        <q-btn flat dense @click="toHomePage()">
+          <q-icon name="home" />
+        </q-btn>
+        <q-btn flat @click="toCartPage()">
+          <q-icon name="shopping_cart" />
+          <q-badge v-if="existCart" color="red" floating>{{
+            cartLength
+          }}</q-badge>
+        </q-btn>
+      </q-toolbar>
+      <q-toolbar v-else-if="currentPath == '/cart'" class="bg-white text-black">
+        <q-btn flat dense @click="toMenuPage()">
+          <q-icon name="arrow_back" />
+        </q-btn>
+        <q-toolbar-title class="q-pt-xs"> 장바구니 </q-toolbar-title>
+        <q-btn flat dense @click="toHomePage()">
+          <q-icon name="home" />
+        </q-btn>
+      </q-toolbar>
     </q-header>
 
     <q-drawer
@@ -29,13 +55,14 @@
       overlay
       behavior="mobile"
       bordered
+      no-swipe-open
     >
       <q-list>
         <EventNotifications></EventNotifications>
       </q-list>
     </q-drawer>
 
-    <q-drawer v-model="rightDrawerOpen" side="right" overlay behavior="mobile">
+    <q-drawer v-model="rightDrawerOpen" side="right" overlay behavior="mobile" bordered no-swipe-open>
       <q-list>
         <q-item-label header> 로그인 / 회원가입 ( 준비중 )</q-item-label>
         <q-item>
@@ -341,6 +368,7 @@ export default defineComponent({
 
     // store information
     const storeInfo = useStoreInfo();
+    const { currentStore } = storeToRefs(storeInfo);
     const { setAllStores, setAllMenus } = storeInfo;
 
     onMounted(() => {
@@ -378,7 +406,27 @@ export default defineComponent({
     const { setIsForm, setName, setPhone, setPassword, checkOrder } =
       orderCheckStore;
 
-    // to brand page
+    // to home page
+    function toHomePage() {
+      router.push({ path: "/" });
+    }
+
+      // to brand page
+      function toBrandPage() {
+      router.push({ path: "/brand" });
+    }
+
+    // to menu page
+    function toMenuPage() {
+      router.push({ path: "/menu" });
+    }
+
+    // to cart page
+    function toCartPage() {
+      router.push({ path: "/cart" });
+    };
+
+    // to check page
     function toCheckPage() {
       router.push({ path: "/check" });
     }
@@ -415,6 +463,13 @@ export default defineComponent({
       },
 
       tab: ref("search"),
+
+      currentStore,
+      cartLength,
+      toHomePage,
+      toBrandPage,
+      toMenuPage,
+      toCartPage,
 
       existCart,
       orderValidation,
