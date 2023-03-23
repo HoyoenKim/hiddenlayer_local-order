@@ -4,23 +4,6 @@
       {{ menuTables }}
       {{ menus }}
     </div>-->
-    <q-toolbar>
-      <q-btn flat dense @click="toBrandPage()">
-        <q-icon name="arrow_back" />
-      </q-btn>
-      <q-toolbar-title class="q-pt-xs">
-        {{ currentStore.store_title }} 메뉴
-      </q-toolbar-title>
-      <q-btn flat dense @click="toHomePage()">
-        <q-icon name="home" />
-      </q-btn>
-      <q-btn flat @click="toCartPage()">
-        <q-icon name="shopping_cart" />
-        <q-badge v-if="existCart" color="red" floating>{{
-          cartLength
-        }}</q-badge>
-      </q-btn>
-    </q-toolbar>
     <q-expansion-item
       default-opened
       header-class="bg-grey-4"
@@ -233,21 +216,6 @@ export default defineComponent({
       }
     });
 
-    // to store page
-    function toHomePage() {
-      router.push({ path: "/" });
-    }
-
-    // to brand page
-    function toBrandPage() {
-      router.push({ path: "/brand" });
-    }
-
-    // to menu page
-    function toCartPage() {
-      router.push({ path: "/cart" });
-    }
-
     // to deserialize the json string
     function ds(string) {
       return JSON.parse(string);
@@ -318,9 +286,6 @@ export default defineComponent({
 
     return {
       currentStore,
-      toHomePage,
-      toBrandPage,
-      toCartPage,
       cartLength,
       existCart,
 
