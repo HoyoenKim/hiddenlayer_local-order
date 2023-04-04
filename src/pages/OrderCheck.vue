@@ -238,14 +238,24 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
+import { useRouteInfo } from "src/stores/routeInfo";
 import { useStoreInfo } from "src/stores/storeInfo";
 import { useOrderCheckStore } from "src/stores/orderCheck";
 
 export default defineComponent({
   name: "OrderCheck",
   setup() {
+    // routing
+    const router = useRouter();
+
+    // route, utils
+    const routeInfoStore = useRouteInfo();
+    const { headerTab, bottomTab } = storeToRefs(routeInfoStore);
+    const { setHeaderTab, setBottomTab, ds } = routeInfoStore;
+
     // store information
     const storeInfo = useStoreInfo();
     const { allStores, allMenus } = storeToRefs(storeInfo);
@@ -255,6 +265,10 @@ export default defineComponent({
     const { orders, isForm, Name, Phone, Password } =
       storeToRefs(orderCheckStore);
     const { checkOrder, setIsForm, deleteOrder } = orderCheckStore;
+
+    onMounted(() => {
+      setBottomTab('check');
+    });    
 
     // to fill forms
     var nameRef = ref(null);
@@ -285,11 +299,6 @@ export default defineComponent({
       nameRef.value.resetValidation();
       phoneRef.value.resetValidation();
       passwordRef.value.resetValidation();
-    }
-
-    // to deserialize the json string
-    function ds(string) {
-      return JSON.parse(string);
     }
 
     function getStoreInfo(storeId) {

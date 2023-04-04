@@ -1,52 +1,100 @@
 <template>
   <q-layout view="hHh lpR fFr">
-    <q-header height-hint="98">
+    <q-header
+      class="bg-white" 
+      height-hint="98">
       <q-toolbar
-        v-if="currentPath == '/' || currentPath == '/check'"
-        class="q-py-sm bg-white text-black"
-      >
-        <q-btn outline round icon="notifications" @click="toggleLeftDrawer"
-          ><q-badge color="red" floating>1</q-badge></q-btn
-        >
-        <q-toolbar-title class="text-center" cliackable to="/">
-          <q-tabs
-            indicator-color="transparent"
-            dense
-            class="bg-white text-black"
-          >
-            <q-route-tab :ripple="false" no-caps to="/" exact
-              >LocalOrder</q-route-tab
-            >
-          </q-tabs>
-        </q-toolbar-title>
-        <q-btn outline round icon="person_outline" @click="toggleRightDrawer" />
-      </q-toolbar>
-      <q-toolbar v-else-if="currentPath == '/menu'" class="bg-white text-black">
-        <q-btn flat dense @click="toBrandPage()">
+        v-if="currentPath == '/brand' || currentPath == '/menu' || currentPath == '/event'"
+        class="q-px-none bg-white text-black justify-between">
+        <q-btn
+          flat dense
+          @click="toHomePage()">
           <q-icon name="arrow_back" />
         </q-btn>
-        <q-toolbar-title class="q-pt-xs">
-          {{ currentStore.store_title }} 메뉴
+        <q-toolbar-title
+          class="q-pt-xs">
+          {{ currentStore.store_title }}
         </q-toolbar-title>
-        <q-btn flat dense @click="toHomePage()">
-          <q-icon name="home" />
-        </q-btn>
-        <q-btn flat @click="toCartPage()">
+        <q-btn
+          flat
+          @click="toPage('/cart')">
           <q-icon name="shopping_cart" />
-          <q-badge v-if="existCart" color="red" floating>{{
-            cartLength
-          }}</q-badge>
+          <q-badge
+            v-if="existCart"
+            color="red" floating>
+            {{ cartLength }}
+          </q-badge>
         </q-btn>
       </q-toolbar>
-      <q-toolbar v-else-if="currentPath == '/cart'" class="bg-white text-black">
-        <q-btn flat dense @click="toMenuPage()">
+      
+      <q-toolbar
+        v-else-if="currentPath == '/cart'"
+        class="bg-white text-black q-px-none">
+        <q-btn
+          flat dense
+          @click="cartRoute()">
           <q-icon name="arrow_back" />
         </q-btn>
-        <q-toolbar-title class="q-pt-xs"> 장바구니 </q-toolbar-title>
-        <q-btn flat dense @click="toHomePage()">
+        <q-toolbar-title
+          class="q-pt-xs">
+            장바구니
+        </q-toolbar-title>
+        <q-btn
+          flat dense
+          @click="toHomePage()">
           <q-icon name="home" />
         </q-btn>
       </q-toolbar>
+      
+      <q-toolbar
+        v-else-if="currentPath == '/check'"
+        class="bg-white text-black q-px-none">
+        <q-btn
+          flat dense
+          @click="toHomePage()">
+          <q-icon name="arrow_back" />
+        </q-btn>
+      </q-toolbar>
+      
+      <div v-else
+        class="q-px-none q-pt-sm q-pb-md">
+        <q-tabs
+          v-model="headerTab"
+          class="q-pb-sm text-subtitle1 text-bold"
+          :breakpoint="100"
+          :outside-arrows="true"
+          :mobile-arrows="true"
+          align="left"
+          active-class="bg-white text-black"
+          content-class="bg-white text-grey-5"
+          indicator-color="transparent"
+          @click="headerTabRoute()">
+          <q-tab name="near" :ripple="false">
+            근처로
+          </q-tab>
+          <q-tab name="event" :ripple="false">
+            이벤트
+          </q-tab>
+          <q-tab name="list" :ripple="false">
+            리스트
+          </q-tab>
+        </q-tabs>
+        <q-input
+          class="q-px-sm"
+          v-model="searchStore"
+          dense
+          outlined
+          label-slot
+          color="black"
+          type="search">
+          <template v-slot:label>
+            <div class="text-grey-5">검색어를 입력하세요.</div>
+          </template>
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </div>
     </q-header>
 
     <q-drawer
@@ -55,8 +103,7 @@
       overlay
       behavior="mobile"
       bordered
-      no-swipe-open
-    >
+      no-swipe-open>
       <q-list>
         <EventNotifications></EventNotifications>
       </q-list>
@@ -87,59 +134,76 @@
       <router-view />
     </q-page-container>
     <q-footer elevated class="bg-white">
-      <q-tabs
-        v-if="currentPath == '/' || currentPath == '/check'"
-        dense
-        class="text-black"
-      >
-        <q-route-tab exact to="/" icon="search" label="Store" no-caps />
-        <q-route-tab
-          exact
-          to="/check"
-          icon="info"
-          label="My Order"
-          no-caps="" /></q-tabs
-      ><q-list bordered separator>
+      <q-list
+        v-if="currentPath == '/cart'"
+        bordered separator>
         <q-item
-          v-if="currentPath == '/menu' && existCart"
-          clickable
-          to="/cart"
-          class="text-center text-h6 bg-blue text-white"
-        >
-          <q-item-section>장바구니 보기</q-item-section>
-        </q-item>
-        <q-item
-          v-if="currentPath == '/cart'"
-          :ripple="false"
           class="text-center bg-blue text-white"
-        >
-          <q-item-section
-            ><q-btn
+          
+          :ripple="false">
+          <q-item-section>
+            <q-btn
+              class="text-subtitle1 text-bold"
               flat
               :disable="!orderValidation"
-              class="text-subtitle1 text-bold"
-              @click="orderCheck = true"
-              >주문하기</q-btn
-            ></q-item-section
-          >
+              @click="orderCheck = true">
+              주문하기
+            </q-btn>
+          </q-item-section>
         </q-item>
-      </q-list></q-footer
-    >
+      </q-list>
+
+      <div v-else
+        class="q-pt-xs q-pb-sm">
+        <q-tabs
+          v-model="bottomTab"
+          align="center"
+          active-class="bg-white text-black"
+          content-class="bg-white text-grey-5"
+          indicator-color="transparent"
+          @click="bottomTabRoute()">
+          <q-tab name="home" :ripple="false">
+            <q-icon class="q-pb-xs" size="sm" name="explore"/>
+            둘러보기
+          </q-tab>
+          <q-tab name="menu" :ripple="false">
+            <q-icon class="q-pb-xs" size="sm" name="menu_book"/>
+            메뉴판
+          </q-tab>
+          <q-tab name="event" :ripple="false">
+            <q-icon class="q-pb-xs" size="sm" name="event"/>
+            이벤트들
+          </q-tab>
+          <q-tab name="brand" :ripple="false">
+            <q-icon class="q-pb-xs" size="sm" name="store"/>
+            가게 소개
+          </q-tab>
+          <q-tab name="check" :ripple="false"> 
+            <q-icon class="q-pb-xs" size="sm" name="favorite"/>
+            찜목록
+          </q-tab>
+        </q-tabs>
+      </div>
+    </q-footer>
   </q-layout>
-  <q-dialog v-model="orderCheck" position="bottom">
-    <q-card style="width: 60vw; max-width: 500px">
-      <q-card-section horizontal class="justify-end bg-grey-4">
+
+  <q-dialog
+    v-model="orderCheck"
+    position="bottom">
+    <q-card
+      style="width: 60vw; max-width: 500px">
+      <q-card-section
+        class="q-pa-none justify-end bg-grey-4">
         <q-btn
           size="sm"
           icon="close"
           :ripple="false"
           round
           flat
-          v-close-popup
-        ></q-btn>
+          v-close-popup/>
       </q-card-section>
       <q-card-section>
-        <div class="text-h5 text-bold text-center">주문 최종 확인</div>
+        <div classs="text-h5 text-bold text-center">주문 최종 확인</div>
       </q-card-section>
       <q-separator />
       <q-card-section class="q-pt-none">
@@ -161,8 +225,7 @@
             <q-card-section
               v-for="label in menu.menu_option_label"
               :key="label"
-              class="q-px-xs q-pb-none"
-            >
+              class="q-px-xs q-pb-none">
               <q-item dense class="fit">
                 <q-item-section class="text-subtitle1">
                   <q-item-label>{{ Object.keys(label)[0] }}</q-item-label>
@@ -305,7 +368,7 @@
         주문이 완료되었습니다.
       </q-card-section>
       <q-card-actions align="right" class="bg-white text-teal">
-        <q-btn flat label="확인" v-close-popup @click="toCheckPage" />
+        <q-btn flat label="확인" v-close-popup @click="toPage('/check')" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -328,6 +391,7 @@
 import { defineComponent, ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
+import { useRouteInfo } from "src/stores/routeInfo";
 import { useStoreInfo } from "src/stores/storeInfo";
 import { useCartStore } from "src/stores/cartInfo";
 import { useOrderCheckStore } from "src/stores/orderCheck";
@@ -369,12 +433,7 @@ export default defineComponent({
     // store information
     const storeInfo = useStoreInfo();
     const { currentStore } = storeToRefs(storeInfo);
-    const { setAllStores, setAllMenus } = storeInfo;
-
-    onMounted(() => {
-      setAllStores();
-      setAllMenus();
-    });
+    const { setAllStores, setAllStories, setAllMenuTables, setAllMenus, setCurrentStore } = storeInfo;
 
     // cart information
     const cartStore = useCartStore();
@@ -403,32 +462,86 @@ export default defineComponent({
 
     // order information
     const orderCheckStore = useOrderCheckStore();
-    const { setIsForm, setName, setPhone, setPassword, checkOrder } =
-      orderCheckStore;
+    const { setIsForm, setName, setPhone, setPassword, checkOrder } = orderCheckStore;
+
+    const routeInfoStore = useRouteInfo();
+    const { headerTab, bottomTab } = storeToRefs(routeInfoStore);
+    const { setHeaderTab, setBottomTab } = routeInfoStore
+
+    function headerTabRoute() {
+      if(headerTab.value == "near") {
+        setBottomTab("home");
+        router.push({ path: "/" });
+      }
+      else if(headerTab.value == "event") {
+        router.push({ path: "/" });
+      }
+      else if(headerTab.value == "list") {
+        setBottomTab("home");
+        router.push({ path: "/store" });
+      }
+    }
+
+    function bottomTabRoute() {
+      if(bottomTab.value == "home") {
+        if(headerTab.value == "list") {
+          router.push({ path: "/store" });
+        }
+        else {
+          setHeaderTab("near");
+          router.push({ path: "/" });
+        }
+      }
+      else if(bottomTab.value == "check") {
+        router.push({ path: "/check" })
+      }
+      else {
+        if(Object.keys(currentStore.value).length == 0) {
+          router.push({ path: "/nfc" })
+        }
+        else {
+          if(bottomTab.value == "menu") {
+            router.push({ path: "/menu" })
+          }
+          else if(bottomTab.value == "event") {
+            setHeaderTab("event");
+            router.push({ path: "/event" })
+          }
+          else if(bottomTab.value == "brand") {
+            router.push({ path: "/brand" })
+          }
+        }
+        
+      }
+    }
+
+    function cartRoute() {
+      if(bottomTab.value == "brand") {
+        router.push({ path: "/brand" })
+      }
+      else {
+        setBottomTab("menu")
+        router.push({ path: "/menu" })
+      }
+    }
 
     // to home page
     function toHomePage() {
-      router.push({ path: "/" });
+      setCurrentStore({});
+      if(headerTab.value == "list") {
+        setBottomTab("home")
+        router.push({ path: "/store" });
+      }
+      else {
+        setHeaderTab("near");
+        setBottomTab("home");
+        router.push({ path: "/" });
+      }
     }
 
-      // to brand page
-      function toBrandPage() {
-      router.push({ path: "/brand" });
-    }
-
-    // to menu page
-    function toMenuPage() {
-      router.push({ path: "/menu" });
-    }
-
-    // to cart page
-    function toCartPage() {
-      router.push({ path: "/cart" });
-    };
-
-    // to check page
-    function toCheckPage() {
-      router.push({ path: "/check" });
+    // to route page
+    function toPage(path) {
+      router.push({ path: path });
     }
 
     var finishOrder = ref(false);
@@ -448,7 +561,16 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
     const rightDrawerOpen = ref(false);
 
+    onMounted(() => {
+      setAllStores();
+      setAllStories();
+      setAllMenuTables();
+      setAllMenus();
+    })
+
     return {
+      searchStore: ref(""),
+
       currentPath,
 
       essentialLinks: linksList,
@@ -462,14 +584,18 @@ export default defineComponent({
         rightDrawerOpen.value = !rightDrawerOpen.value;
       },
 
-      tab: ref("search"),
+      headerTab,
+      headerTabRoute,
+      bottomTab,
+      bottomTabRoute,
+      cartRoute,
+      setHeaderTab,
+      setBottomTab,
 
       currentStore,
       cartLength,
       toHomePage,
-      toBrandPage,
-      toMenuPage,
-      toCartPage,
+      toPage,
 
       existCart,
       orderValidation,
@@ -493,7 +619,6 @@ export default defineComponent({
       sendToServer,
 
       finishOrder,
-      toCheckPage,
     };
   },
 });

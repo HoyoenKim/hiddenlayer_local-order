@@ -4,8 +4,10 @@ import { api } from "boot/axios";
 
 export const useStoreInfo = defineStore("storeInfo", {
   state: () => ({
-    allStores: [],
-    allMenus: [],
+    allStores: LocalStorage.getItem("allStores") || {},
+    allStories: LocalStorage.getItem("allStories") || {},
+    allMenuTables: LocalStorage.getItem("allMenuTables") || {},
+    allMenus: LocalStorage.getItem("allMenus") || {},
     currentStore: LocalStorage.getItem("currentStore") || {},
   }),
 
@@ -20,22 +22,46 @@ export const useStoreInfo = defineStore("storeInfo", {
       LocalStorage.set("currentStore", store);
       this.currentStore = store;
     },
-    setAllStores() {
+    async setAllStores() {
       var query = "store/allStores";
-      api
+      await api
         .get(query)
         .then((response) => {
           var stores = response.data.stores;
+          LocalStorage.set("allStores", stores);
           this.allStores = stores;
         })
         .catch((error) => {});
     },
-    setAllMenus() {
+    async setAllStories() {
+      var query = "brand/allStories";
+      await api
+        .get(query)
+        .then((response) => {
+          var stories = response.data.stories;
+          LocalStorage.set("allStories", stories);
+          this.allStories = stories;
+        })
+        .catch((error) => {});
+    },
+    async setAllMenuTables() {
+      var query = "menu/allMenuTables";
+      await api
+        .get(query)
+        .then((response) => {
+          var menuTables = response.data.menuTables;
+          LocalStorage.set("allMenuTables", menuTables);
+          this.allMenuTables = menuTables;
+        })
+        .catch((error) => {});
+    },
+    async setAllMenus() {
       var query = "menu/allMenus";
-      api
+      await api
         .get(query)
         .then((response) => {
           var menus = response.data.menus;
+          LocalStorage.set("allMenus", menus);
           this.allMenus = menus;
         })
         .catch((error) => {});
