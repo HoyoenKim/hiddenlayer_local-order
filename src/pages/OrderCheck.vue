@@ -140,7 +140,7 @@
                     order.user_location
                   }}</q-item-label>
                 </q-item-section>
-                <q-item-section
+                <!--<q-item-section
                   v-for="(menu_option, menu_option_index) in ds(
                     getMenuInfo(menu_id).menu_options
                   )"
@@ -170,7 +170,7 @@
                   <q-item-label class="q-pl-sm" caption>{{
                     ds(order.menu_options)[menuIndex].slice(-1)[0]
                   }}</q-item-label>
-                </q-item-section>
+                </q-item-section>-->
               </q-item>
             </q-card-section>
             <q-separator />

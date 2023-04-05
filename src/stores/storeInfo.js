@@ -8,6 +8,7 @@ export const useStoreInfo = defineStore("storeInfo", {
     allStories: LocalStorage.getItem("allStories") || {},
     allMenuTables: LocalStorage.getItem("allMenuTables") || {},
     allMenus: LocalStorage.getItem("allMenus") || {},
+    allEvents: LocalStorage.getItem("allEvents") || {},
     currentStore: LocalStorage.getItem("currentStore") || {},
   }),
 
@@ -66,5 +67,16 @@ export const useStoreInfo = defineStore("storeInfo", {
         })
         .catch((error) => {});
     },
+    async setAllEvents() {
+      var query = "event/allEvents";
+      await api
+        .get(query)
+        .then((response) => {
+          var events = response.data.events;
+          LocalStorage.set("allEvents", events);
+          this.allEvents = events;
+        })
+        .catch((error) => {});
+    }
   },
 });

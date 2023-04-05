@@ -10,21 +10,18 @@
     v-model="storeShow"
     position="bottom">
     <q-card
-      style="width: 100vw; max-width: 450px">
+      style="width: 100vw; max-width: 400px">
       <q-card-section
-        class="q-pa-none bg-grey-4 justify-end">
+        class="q-pa-none bg-grey-4 row justify-end">
         <q-btn
           size="sm"
           icon="close"
           :ripple="false"
-          round
-          flat
-          v-close-popup/>
+          round flat v-close-popup/>
       </q-card-section>
       <q-card-section
         class="q-pa-md flex flex-center">
-        <div
-          style="width:400px">
+        <div style="width: 400px">
           <SelectedStore :currentStore="currentStore"/>
         </div>   
       </q-card-section>

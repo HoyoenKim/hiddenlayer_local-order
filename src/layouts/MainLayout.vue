@@ -4,8 +4,8 @@
       class="bg-white" 
       height-hint="98">
       <q-toolbar
-        v-if="currentPath == '/brand' || currentPath == '/menu' || currentPath == '/event'"
-        class="q-px-none bg-white text-black justify-between">
+        v-if="currentPath == '/brand' || currentPath == '/menu' || currentPath == '/event' || currentPath == '/nfc'"
+        class="q-pl-none bg-white text-black justify-between">
         <q-btn
           flat dense
           @click="toHomePage()">
@@ -139,15 +139,14 @@
         bordered separator>
         <q-item
           class="text-center bg-blue text-white"
-          
           :ripple="false">
           <q-item-section>
             <q-btn
-              class="text-subtitle1 text-bold"
               flat
+              :label="totalPrice + '원 주문하기'"
+              class="text-h6 bold fit"
               :disable="!orderValidation"
               @click="orderCheck = true">
-              주문하기
             </q-btn>
           </q-item-section>
         </q-item>
@@ -191,166 +190,220 @@
     v-model="orderCheck"
     position="bottom">
     <q-card
-      style="width: 60vw; max-width: 500px">
+      style="width: 100vw; max-width: 400px">
+      
       <q-card-section
-        class="q-pa-none justify-end bg-grey-4">
+        class="q-pa-none bg-grey-4 row justify-end">
         <q-btn
           size="sm"
           icon="close"
           :ripple="false"
-          round
-          flat
-          v-close-popup/>
+          round flat v-close-popup/>
       </q-card-section>
+      
       <q-card-section>
-        <div classs="text-h5 text-bold text-center">주문 최종 확인</div>
+        <div class="text-h5 text-bold text-center">주문 최종 확인</div>
       </q-card-section>
+     
       <q-separator />
-      <q-card-section class="q-pt-none">
-        <div class="column wrap q-gutter-md fit q-pt-md">
-          <q-card v-for="(menu, menuId) in cart" :key="menuId" flat bordered>
-            <q-card-section horizontal class="q-pt-sm">
-              <q-item class="fit">
-                <q-item-section>
-                  <q-item-label class="text-subtitle1 text-bold">{{
-                    menu.menu_info.menu_title
-                  }}</q-item-label>
-                  <q-item-label class="q-pl-sm" caption>{{
-                    menu.store_title
-                  }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-card-section>
-            <q-separator />
+
+      <q-card-section class="q-px-sm">
+        <q-card
+            v-for="(currentMenuOption, currentMenuId) in cart"
+            :key="currentMenuId"
+            flat bordered>
             <q-card-section
-              v-for="label in menu.menu_option_label"
-              :key="label"
-              class="q-px-xs q-pb-none">
-              <q-item dense class="fit">
-                <q-item-section class="text-subtitle1">
-                  <q-item-label>{{ Object.keys(label)[0] }}</q-item-label>
-                  <q-item-label class="q-pl-sm" caption>{{
-                    Object.values(label)[0]
-                  }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-card-section>
-            <q-card-section class="q-px-xs">
-              <q-item dense class="fit">
-                <q-item-section class="text-subtitle1">
-                  <q-item-label>총 가격</q-item-label>
-                  <q-item-label class="q-pl-sm" caption
-                    >{{
-                      menu.menu_option_select.menu_price *
-                      menu.menu_option_select.number
-                    }}
-                    원
+              class="q-pa-none q-pt-sm">
+              <q-item class="fit q-pr-none">
+                <q-item-section>
+                  <q-item-label
+                    class="text-h6 text-bold">
+                    {{ allMenus[currentMenuId].menu_title }}
                   </q-item-label>
-                </q-item-section>
-                <q-item-section side class="text-black">
-                  <q-item-label>
-                    <span class="q-px-lg"
-                      >{{ menu.menu_option_select.number }} 개</span
-                    >
+                  <q-item-label
+                    class="text-subtitle-1 q-pl-sm">
+                    {{ allStores[allMenus[currentMenuId].store_id].store_title }}
                   </q-item-label>
                 </q-item-section>
               </q-item>
             </q-card-section>
-          </q-card>
-        </div>
-      </q-card-section>
-      <q-separator />
-      <q-card-section class="q-pt-none">
-        <div class="column wrap fit q-pt-md">
-          <q-card flat bordered>
-            <q-card-section horizontal class="text-subtitle1 text-bold">
-              <q-item class="fit">
-                <q-item-section> 주문자 정보 </q-item-section>
-              </q-item>
-            </q-card-section>
+            
             <q-separator />
-            <q-card-section class="q-px-xs">
-              <q-item dense class="fit">
-                <q-item-section class="text-subtitle1">
-                  <q-item-label>닉네임</q-item-label>
-                  <q-item-label class="q-pl-sm" caption>{{
-                    name
-                  }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-card-section>
-            <q-separator />
-            <q-card-section class="q-px-xs">
-              <q-item dense class="fit">
-                <q-item-section class="text-subtitle1">
-                  <q-item-label>전화번호</q-item-label>
-                  <q-item-label class="q-pl-sm" caption>{{
-                    phone
-                  }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-card-section>
-            <q-separator />
-            <q-card-section class="q-px-xs">
-              <q-item dense class="fit">
-                <q-item-section class="text-subtitle1">
-                  <q-item-label>배송지</q-item-label>
-                  <q-item-label class="q-pl-sm" caption
-                    >{{ roomNumber }}
-                  </q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-card-section>
-          </q-card>
-        </div>
-      </q-card-section>
-      <q-separator />
-      <q-card-section class="q-pt-none">
-        <div class="column wrap fit q-pt-md">
-          <q-card flat bordered>
-            <q-card-section horizontal class="text-subtitle1 text-bold">
-              <q-item class="fit">
-                <q-item-section> 주문 정보 </q-item-section>
-              </q-item>
-            </q-card-section>
-            <q-separator />
-            <q-card-section class="q-px-xs">
-              <q-item dense class="fit">
-                <q-item-section class="text-subtitle1">
-                  <q-item-label>배송 시간</q-item-label>
-                  <q-item-label class="q-pl-sm" caption> 13:00</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-card-section>
-            <q-separator />
-            <q-card-section class="q-px-xs">
-              <q-item dense class="fit">
-                <q-item-section class="text-subtitle1">
-                  <q-item-label>총 결제 금액</q-item-label>
-                  <q-item-label class="q-pl-sm" caption>
-                    {{ totalPrice }}</q-item-label
-                  >
-                </q-item-section>
-              </q-item>
-            </q-card-section>
-            <q-separator />
-            <q-card-section class="q-px-xs q-pb-none">
-              <q-item dense class="fit">
-                <q-item-section class="text-subtitle1">
-                  <q-item-label>결제 방법</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-card-section>
-            <q-card-section class="q-pt-none q-pb-sm">
+           
+            <q-card-section class="q-px-sm">
+              <div class="q-px-md q-pb-sm text-h6 text-bold">
+                가격
+              </div>
               <q-option-group
-                v-model="payment"
-                :options="paymentOptions"
-                color="primary"
-              />
+                disable
+                v-model="currentMenuOption.price_option_value"
+                :options="ds(allMenus[currentMenuId].menu_price_options).options"
+                color="teal-5">
+                <template v-slot:label="opt">
+                  <div class="row justify-between"
+                    style="width: 80vw; max-width: 320px">
+                    <div class="text-subtitle1">{{ opt.label }}</div>
+                    <div class="text-subtitle1">{{ convertPrice(opt.price) }}원</div>
+                  </div>
+                </template>
+              </q-option-group>
             </q-card-section>
+            
+            <q-separator />
+
+            <div
+              v-for="(menuAddOption, addOptionIndex) in ds(allMenus[currentMenuId].menu_additional_options)"
+              :key="addOptionIndex">
+              <q-card-section class="q-px-sm">
+                <div class="q-px-md q-pb-sm  text-h6 text-bold">
+                  {{ menuAddOption.name }}
+                </div>
+                <q-option-group
+                  disable
+                  v-if="menuAddOption.type == 0"
+                  v-model="currentMenuOption.add_option_values[addOptionIndex]"
+                  :options="menuAddOption.options"
+                  color="teal-5">
+                  <template v-slot:label="opt">
+                    <div class="row justify-between"
+                      style="width: 80vw; max-width: 320px">
+                      <div class="text-subtitle1">{{ opt.label }}</div>
+                      <div class="text-subtitle1">+{{ convertPrice(opt.price) }}원</div>
+                    </div>
+                  </template>
+                </q-option-group>
+                <q-option-group
+                  disable
+                  v-else-if="menuAddOption.type == 1"
+                  v-model="currentMenuOption.add_option_values[addOptionIndex]"
+                  :options="menuAddOption.options"
+                  type="checkbox"
+                  color="teal-5">
+                  <template v-slot:label="opt">
+                    <div class="row justify-between"
+                      style="width: 80vw; max-width: 320px">
+                      <div class="text-subtitle1">{{ opt.label }}</div>
+                      <div class="text-subtitle1">+{{ convertPrice(opt.price) }}원</div>
+                    </div>
+                  </template>
+                </q-option-group>
+              </q-card-section>
+              <q-separator />
+            </div>
+
+            <q-card-section class="q-px-sm row justify-between">
+              <div class="q-px-md q-pb-sm  text-h6 text-bold">
+                수량
+              </div>
+              <div class="">
+                <q-btn
+                  size="sm"
+                  icon="arrow_downward"
+                  :ripple="false"
+                  round outline
+                  @click="if (currentMenuOption.number > 1) currentMenuOption.number--;"/>
+                <span class="text-subtitle1 text-bold q-px-lg">{{ currentMenuOption.number }}</span>
+                <q-btn
+                  size="sm"
+                  icon="arrow_upward"
+                  :ripple="false"
+                  round outline
+                  @click="currentMenuOption.number++"/>
+              </div>
+            </q-card-section>
+            
+            <q-separator />
+            
+            <q-card-section class="q-px-sm q-pb-sm row justify-between">
+              <div class="q-px-md q-pb-sm  text-h6 text-bold">
+                총 가격
+              </div>
+              <div class="">
+                <span class="text-subtitle1 text-bold q-px-lg">
+                  {{ convertPrice(calTotalPrice(currentMenuId)) }}
+                </span>
+              </div>
+            </q-card-section>
+
           </q-card>
-        </div>
       </q-card-section>
+      <q-card-section class="q-pa-sm">
+        <q-card flat bordered>
+            
+          <q-card-section class="q-px-sm q-pb-none">
+            <div class="q-px-md q-pb-md text-h6 text-bold">
+              닉네임 *
+            </div>
+            <q-input
+              v-model="name"
+              label="주문자 정보"
+              dense outlined lazy-rules
+              :rules="[ (val) => (val && val.length > 0) || '주문자 정보를 입력해 주세요.',]"/>
+          </q-card-section>
+          <q-separator />
+          <q-card-section class="q-px-sm">
+            <div class="q-px-md q-pb-md text-h6 text-bold">
+              전화번호 *
+            </div>
+            <q-input
+              v-model="phone"
+              label="휴대폰 번호"
+              hint="주문 확인 시 사용됩니다."
+              mask="(###) #### - ####"
+              dense outlined/>
+          </q-card-section>
+          <q-separator />
+          <q-card-section class="q-px-sm">
+            <div class="q-px-md q-pb-md text-h6 text-bold">
+              배송지 *
+            </div>
+            <q-input
+              v-model="roomNumber"
+              label="배송지"
+              hint="기숙사 사물함 호수"
+              dense outlined lazy-rules
+              :rules="[ (val) => (val && val.length > 0 && val.length < 5) || '배송지를 정확하게 입력해주세요.', ]"/>
+          </q-card-section>
+        </q-card>
+      </q-card-section>
+
+      <q-card-section class="q-px-sm">
+        <q-card flat bordered>
+          <q-card-section class="q-px-sm">
+            <div class="q-px-md q-pb-md text-h6 text-bold">
+              배송 시간
+            </div>
+            <div class="q-px-lg text-subtitle1">
+              {{ getOrderDate() }} 13:00
+            </div>
+          </q-card-section>
+
+          <q-separator />
+
+          <q-card-section class="q-px-sm">
+            <div class="q-px-md q-pb-md text-h6 text-bold">
+              총 결제 금액
+            </div>
+            <div class="q-px-lg text-subtitle1">
+              {{ convertPrice(totalPrice) }}
+            </div>
+          </q-card-section>
+
+          <q-separator />
+
+          <q-card-section class="q-px-sm">
+            <div class="q-px-md q-pb-md text-h6 text-bold">
+              결제 방법
+            </div>
+            <q-option-group
+              v-model="payment"
+              class="text-subtitle1"
+              :options="paymentOptions"
+              color="primary"/>
+          </q-card-section>
+        </q-card>
+      </q-card-section>
+
       <q-card-actions align="center" class="text-white bg-blue">
         <q-btn
           flat
@@ -430,43 +483,82 @@ export default defineComponent({
       return router.currentRoute.value.path;
     });
 
+    // route, utils
+    const routeInfoStore = useRouteInfo();
+    const { headerTab, bottomTab } = storeToRefs(routeInfoStore);
+    const { setHeaderTab, setBottomTab, ds } = routeInfoStore;
+
     // store information
     const storeInfo = useStoreInfo();
-    const { currentStore } = storeToRefs(storeInfo);
-    const { setAllStores, setAllStories, setAllMenuTables, setAllMenus, setCurrentStore } = storeInfo;
+    const { currentStore, allStores, allMenus } = storeToRefs(storeInfo);
+    const { setAllStores, setAllStories, setAllMenuTables, setAllMenus, setAllEvents, setCurrentStore } = storeInfo;
 
     // cart information
     const cartStore = useCartStore();
     const { cart, name, phone, roomNumber, password, orderValidation } =
       storeToRefs(cartStore);
-    const { sendCartToServer, resetCart, resetUser } = cartStore;
+    const { sendCartToServer, resetCart, resetUser, convertPrice } = cartStore;
+    
     // getter error why?
     const cartLength = computed(() => {
       return Object.keys(cart.value).length;
     });
+    
     const existCart = computed(() => {
       if (Object.keys(cart.value).length == 0) {
         return false;
       }
       return true;
     });
+    
     const totalPrice = computed(() => {
       var price = 0;
       for (const [menuId, menu] of Object.entries(cart.value)) {
-        // TODO 추가 옵션으로 추가 비용 생기면 어떻게 계산?
-        price +=
-          menu.menu_option_select.menu_price * menu.menu_option_select.number;
+        price += calTotalPrice(menuId);
       }
       return price;
     });
 
+    function calTotalPrice(currentMenuId) {
+      var currentMenuOption = cart.value[currentMenuId]
+
+      // menu price, menu add price 계산
+      var menuId = currentMenuOption.menu_id;
+      var menuInfo = allMenus.value[menuId];
+
+      var menuPriceInfo = ds(menuInfo.menu_price_options);
+      var menuAddInfo = ds(menuInfo.menu_additional_options);
+
+      var selectedPriceOption = currentMenuOption.price_option_value;
+      var selectedAddOption = currentMenuOption.add_option_values;
+
+      // cal price
+      var price = menuPriceInfo.options[selectedPriceOption].price;
+      currentMenuOption.menu_price = price;
+
+      // cal add price
+      var addPrice = 0;
+      menuAddInfo.forEach((addInfo, index) => {
+        var type = addInfo.type;
+        if(type == 0) {
+          // option
+          addPrice += addInfo.options[selectedAddOption[index]].price;
+        }
+        else if(type == 1) {
+          // checkbox
+          selectedAddOption[index].forEach((addIndex) => {
+            addPrice += addInfo.options[addIndex].price;
+          })
+        }
+      })
+      currentMenuOption.menu_add_price = addPrice;
+
+      return (price + addPrice) * currentMenuOption.number;
+    }
+
     // order information
     const orderCheckStore = useOrderCheckStore();
     const { setIsForm, setName, setPhone, setPassword, checkOrder } = orderCheckStore;
-
-    const routeInfoStore = useRouteInfo();
-    const { headerTab, bottomTab } = storeToRefs(routeInfoStore);
-    const { setHeaderTab, setBottomTab } = routeInfoStore
 
     function headerTabRoute() {
       if(headerTab.value == "near") {
@@ -517,11 +609,16 @@ export default defineComponent({
 
     function cartRoute() {
       if(bottomTab.value == "brand") {
-        router.push({ path: "/brand" })
+        setBottomTab("brand");
+        router.push({ path: "/brand" });
+      }
+      else if(bottomTab.value == "event") {
+        setBottomTab("event");
+        router.push({ path: "/event" });
       }
       else {
-        setBottomTab("menu")
-        router.push({ path: "/menu" })
+        setBottomTab("menu");
+        router.push({ path: "/menu" });
       }
     }
 
@@ -558,6 +655,20 @@ export default defineComponent({
       resetUser();
     }
 
+    function getOrderDate() {
+      let today = new Date(Date.now());
+      let date = today.getHours();
+      if(date > 12) {
+        today.setDate(today.getDate() + 1);
+      }
+
+      let year = today.getFullYear(); // 년도
+      let month = today.getMonth() + 1;  // 월
+      date = today.getDate();  // 날짜
+
+      return year + '-' + month.toString().padStart(2, '0') + '-' + date.toString().padStart(2, '0');
+    }
+
     const leftDrawerOpen = ref(false);
     const rightDrawerOpen = ref(false);
 
@@ -566,6 +677,7 @@ export default defineComponent({
       setAllStories();
       setAllMenuTables();
       setAllMenus();
+      setAllEvents();
     })
 
     return {
@@ -596,6 +708,7 @@ export default defineComponent({
       cartLength,
       toHomePage,
       toPage,
+      ds,
 
       existCart,
       orderValidation,
@@ -615,6 +728,11 @@ export default defineComponent({
         },
       ],
       totalPrice,
+      allStores,
+      allMenus,
+      convertPrice,
+      calTotalPrice,
+      getOrderDate,
 
       sendToServer,
 

@@ -5,10 +5,10 @@ import { api } from "boot/axios";
 export const useCartStore = defineStore("cartInfo", {
   state: () => ({
     cart: LocalStorage.getItem("cart") || {},
-    name: "",
-    phone: "",
-    password: "",
-    roomNumber: "",
+    name: "김호연",
+    phone: "(010)2128-7164",
+    password: "1234",
+    roomNumber: "S305",
   }),
 
   getters: {
@@ -45,10 +45,10 @@ export const useCartStore = defineStore("cartInfo", {
       LocalStorage.set("cart", this.cart);
     },
     resetUser() {
-      this.name = "";
-      this.phone = "";
-      this.password = "";
-      this.roomNumber = "";
+      this.name = "김호연";
+      this.phone = "(010)2128-7164";
+      this.password = "1234";
+      this.roomNumber = "S305";
     },
     sendCartToServer() {
       var query = "/order/createOrder";
@@ -63,5 +63,8 @@ export const useCartStore = defineStore("cartInfo", {
         .then((response) => {})
         .catch((error) => {});
     },
+    convertPrice(price) {
+      return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
   },
 });

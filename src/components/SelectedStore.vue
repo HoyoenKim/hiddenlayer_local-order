@@ -10,14 +10,14 @@
         swipeable infinite
         style="border-radius: 16px 16px 0 0">      
         <q-carousel-slide
-          v-for="n in parseInt(currentStore.store_images_nums)" :key="n" :name="n"
+          v-for="storeImageNum in parseInt(currentStore.store_images_nums)" :key="storeImageNum" :name="storeImageNum"
           class="fit q-pa-none bg-grey-4">
           <q-img
             no-transition
             no-spinner
             class="fit"
             fit="fill"
-            :src="baseURL + '/static/images/store/' + currentStore.store_id + '/' + n + '.jpg'"
+            :src="baseURL + '/static/images/store/' + currentStore.store_id + '/' + storeImageNum + '.jpg'"
             style="border-radius: 16px 16px 0 0; max-height: 400px;"/>
         </q-carousel-slide>
       </q-carousel>
@@ -25,11 +25,11 @@
     <q-card-section
       class="q-pa-none row justify-center bg-grey-4">
       <div
-        v-for="n in parseInt(currentStore.store_images_nums)" :key="n"
+        v-for="storeImageNum in parseInt(currentStore.store_images_nums)" :key="storeImageNum"
         class="q-px-xs" 
-        @click="storeSlide = n">
+        @click="storeSlide = storeImageNum">
         <q-icon
-          v-if="n == storeSlide"
+          v-if="storeImageNum == storeSlide"
           class="text-blue-9" name="circle"
           style="font-size: 0.5em;" />
         <q-icon
