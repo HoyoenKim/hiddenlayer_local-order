@@ -5,10 +5,10 @@ import { api } from "boot/axios";
 export const useCartStore = defineStore("cartInfo", {
   state: () => ({
     cart: LocalStorage.getItem("cart") || {},
-    name: "김호연",
-    phone: "(010)2128-7164",
-    password: "1234",
-    roomNumber: "S305",
+    name: "",
+    phone: "",
+    password: "",
+    roomNumber: "",
   }),
 
   getters: {
@@ -31,8 +31,8 @@ export const useCartStore = defineStore("cartInfo", {
       if (!(key in this.cart)) {
         this.cart[key] = value;
       } else {
-        this.cart[key].menu_option_select.number =
-          value.menu_option_select.number;
+        this.cart[key].number =
+          value.number;
       }
       LocalStorage.set("cart", this.cart);
     },

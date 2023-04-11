@@ -5,7 +5,7 @@
       height-hint="98">
       <q-toolbar
         v-if="currentPath == '/brand' || currentPath == '/menu' || currentPath == '/event' || currentPath == '/nfc'"
-        class="q-pl-none bg-white text-black justify-between">
+        class="q-px-sm bg-white text-black justify-between">
         <q-btn
           flat dense
           @click="toHomePage()">
@@ -143,7 +143,7 @@
           <q-item-section>
             <q-btn
               flat
-              :label="totalPrice + '원 주문하기'"
+              :label="convertPrice(totalPrice) + '원 주문하기'"
               class="text-h6 bold fit"
               :disable="!orderValidation"
               @click="orderCheck = true">
@@ -207,7 +207,7 @@
      
       <q-separator />
 
-      <q-card-section class="q-px-sm">
+      <!--<q-card-section class="q-px-sm">
         <q-card
             v-for="(currentMenuOption, currentMenuId) in cart"
             :key="currentMenuId"
@@ -365,7 +365,7 @@
               :rules="[ (val) => (val && val.length > 0 && val.length < 5) || '배송지를 정확하게 입력해주세요.', ]"/>
           </q-card-section>
         </q-card>
-      </q-card-section>
+      </q-card-section>-->
 
       <q-card-section class="q-px-sm">
         <q-card flat bordered>
@@ -401,13 +401,27 @@
               :options="paymentOptions"
               color="primary"/>
           </q-card-section>
+
+          <q-separator />
+
+          <q-card-section class="q-px-sm">
+            <div class="q-px-md q-pb-md text-h6 text-bold text-center text-red">
+              * 주의 사항 *
+            </div>
+            <div class="text-center q-pb-sm text-bold">
+              배송 시간까지 송금하지 않으면 주문은 취소됩니다.
+            </div>
+            <div class="text-center text-bold">
+              주문자와 송금자가 일치해야 합니다.
+            </div>
+          </q-card-section>
         </q-card>
       </q-card-section>
 
       <q-card-actions align="center" class="text-white bg-blue">
         <q-btn
           flat
-          :label="totalPrice + '원 주문하기'"
+          :label="convertPrice(totalPrice) + '원 주문하기'"
           class="text-h6 bold fit"
           @click="sendToServer()"
           v-close-popup
@@ -416,8 +430,8 @@
     </q-card>
   </q-dialog>
   <q-dialog v-model="finishOrder">
-    <q-card style="width: 300px">
-      <q-card-section class="text-center q-pb-none">
+    <q-card style="width: 100vw; max-width: 500px">
+      <q-card-section class="text-h6 text-bold text-center q-pb-none">
         주문이 완료되었습니다.
       </q-card-section>
       <q-card-actions align="right" class="bg-white text-teal">
@@ -608,17 +622,22 @@ export default defineComponent({
     }
 
     function cartRoute() {
-      if(bottomTab.value == "brand") {
-        setBottomTab("brand");
-        router.push({ path: "/brand" });
-      }
-      else if(bottomTab.value == "event") {
-        setBottomTab("event");
-        router.push({ path: "/event" });
+      if(Object.keys(currentStore.value).length == 0) {
+        router.push({ path: "/nfc" })
       }
       else {
-        setBottomTab("menu");
-        router.push({ path: "/menu" });
+        if(bottomTab.value == "brand") {
+          setBottomTab("brand");
+          router.push({ path: "/brand" });
+        }
+        else if(bottomTab.value == "event") {
+          setBottomTab("event");
+          router.push({ path: "/event" });
+        }
+        else {
+          setBottomTab("menu");
+          router.push({ path: "/menu" });
+        }
       }
     }
 
@@ -723,7 +742,7 @@ export default defineComponent({
       payment: "account",
       paymentOptions: [
         {
-          label: "계좌 이체",
+          label: "계좌 이체 (우리은행 류현석 1002-657-201417)",
           value: "account",
         },
       ],

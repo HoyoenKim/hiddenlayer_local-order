@@ -145,7 +145,7 @@ export default defineComponent({
     // to menu page
     function toMenuPage(store_Info) {
       setCurrentStore(store_Info);
-      router.push({ path: "/brand" });
+      router.push({ path: "/menu" });
     }
 
     onMounted(() => {

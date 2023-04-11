@@ -6,9 +6,9 @@ export const useOrderCheckStore = defineStore("orderCheck", {
   state: () => ({
     orders: LocalStorage.getItem("orders") || [],
     isForm: true,
-    Name: "김호연",
-    Phone: "(010)2128-7164",
-    Password: "1234",
+    Name: "",
+    Phone: "",
+    Password: "",
   }),
 
   getters: {},

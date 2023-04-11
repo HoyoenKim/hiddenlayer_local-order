@@ -59,13 +59,13 @@
             
             <q-separator />
 
-            <div
+            <q-expansion-item
               v-for="(menuAddOption, addOptionIndex) in ds(allMenus[currentMenuId].menu_additional_options)"
-              :key="addOptionIndex">
+              :key="addOptionIndex"
+              :label="menuAddOption.name"
+              default-opened
+              header-class="text-h6 text-bold">
               <q-card-section class="q-px-sm">
-                <div class="q-px-md q-pb-sm  text-h6 text-bold">
-                  {{ menuAddOption.name }}
-                </div>
                 <q-option-group
                   v-if="menuAddOption.type == 0"
                   v-model="currentMenuOption.add_option_values[addOptionIndex]"
@@ -95,7 +95,7 @@
                 </q-option-group>
               </q-card-section>
               <q-separator />
-            </div>
+            </q-expansion-item>
 
             <q-card-section class="q-px-sm row justify-between">
               <div class="q-px-md q-pb-sm  text-h6 text-bold">
@@ -311,7 +311,11 @@ export default defineComponent({
     }
 
     function calTotalPrice(currentMenuId) {
+      //console.log(currentMenuId)
       var currentMenuOption = cart.value[currentMenuId]
+
+      //console.log(cart.value)
+      //console.log(currentMenuOption)
 
       // menu price, menu add price 계산
       var menuId = currentMenuOption.menu_id;
@@ -343,6 +347,7 @@ export default defineComponent({
         }
       })
       currentMenuOption.menu_add_price = addPrice;
+      //console.log(price + addPrice)
 
       return (price + addPrice) * currentMenuOption.number;
     }

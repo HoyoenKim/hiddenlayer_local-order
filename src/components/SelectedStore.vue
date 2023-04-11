@@ -117,7 +117,7 @@
       // to menu page
       function toMenuPage(store_Info) {
         setCurrentStore(store_Info);
-        router.push({ path: "/brand" }); //for develo
+        router.push({ path: "/menu" }); //for develo
       }
 
       return {

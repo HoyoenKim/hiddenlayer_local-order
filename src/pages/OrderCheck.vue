@@ -226,11 +226,11 @@
           <q-btn
             flat
             label="주문 취소"
-            color="primary"
+            color="black"
             v-close-popup
             @click="deleteOrder(currentOrderId, currentOrderIndex)"
           />
-          <q-btn flat label="돌아가기" color="black" v-close-popup />
+          <q-btn flat label="돌아가기" color="primary" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>

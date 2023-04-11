@@ -65,6 +65,7 @@
               style="height: 180px; width: 180px; border-radius: 16px">
               <q-img
                 class="fit"
+                no-transition no-spinner
                 :src="baseURL + '/static/images/store/' + currentStore.store_id + '/' + storeImageNum + '.jpg'"
                 style="border-radius: 16px"/>
             </div>

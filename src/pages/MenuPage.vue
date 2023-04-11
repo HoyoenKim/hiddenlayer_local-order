@@ -1,82 +1,130 @@
 <template>
   <q-page class="flex-center">
     <div v-if="Object.keys(currentStore).length != 0">
+      <q-toggle
+        v-model="menuOption"
+        color="primary"
+        keep-color/>
       
-      <div class="q-pa-md q-gutter-sm">
-        <q-btn
-          v-for="(menuTableIndex, tableIndex) in ds(currentStore.menu_table_ids)"
-          :key="tableIndex"
-          :class="{ 'bg-grey-4' : selectedPage != tableIndex, 'bg-grey-10 text-white' : selectedPage == tableIndex }"
-          :ripple="false"
-          flat
-          @click="selectedPage = tableIndex">
-          {{ parseInt(tableIndex) + 1 }} p
-        </q-btn>
-      </div>
-      
-      <div>
-        <q-carousel
-          v-model="selectedPage"
-          swipeable
-          infinite
-          style="height: 90vh">
-          <q-carousel-slide
+      <div v-if="menuOption">
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn
             v-for="(menuTableIndex, tableIndex) in ds(currentStore.menu_table_ids)"
             :key="tableIndex"
-            :name="tableIndex"
-            class="row wrap justify-center">
-            <div
-              class="q-px-xs"
-              style="width: 100vw; max-width: 400px">
-              
-              <div class="text-center text-h5 text-orange q-pt-md">
-                {{ allMenuTables[menuTableIndex].menu_table_title }}
-              </div>
-              <div class="q-py-lg">
-                <q-separator size="4px" color="orange" inset />
-              </div>
-              <div v-if="allMenuTables[menuTableIndex].menu_table_subtitle.length > 0"
-                class="text-grey-8">
-                * {{ allMenuTables[menuTableIndex].menu_table_subtitle }}
-              </div>
-            
-              <q-list>
-                <q-item 
-                  v-for="menuIndex in ds(allMenuTables[menuTableIndex].menu_ids)"
-                  :key="menuIndex"
-                  @click="openMenuDialog(menuIndex)"
-                  clickable v-ripple>
-                  <q-item-section>
-                    <q-item-label class="text-h6">
-                      {{ allMenus[menuIndex].menu_title }}
-                    </q-item-label> 
-                    <q-item-label class="text-subtitle2 text-grey-6">
-                      {{ allMenus[menuIndex].menu_subtitle }}
-                    </q-item-label>
-                    <q-item-label class="text-subtitle2 text-grey-6">
-                      {{ convertPrice(allMenus[menuIndex].menu_price) }}원
-                    </q-item-label>
-                  </q-item-section>
-                  <q-item-section side>
-                    <q-img
-                      fit="fill"
-                      no-transition no-spinner
-                      :src="baseURL + '/static/images/menu/' + menuIndex + '.jpg'"
-                      style="height: 100px; width: 100px">
-                      <template v-slot:error>
-                        <div class="absolute-full flex flex-center bg-grey-4 text-white">
-                        </div>
-                      </template>
-                    </q-img>
-                  </q-item-section>
-                </q-item>
-              </q-list>
+            :class="{ 'bg-grey-4' : selectedPage != tableIndex, 'bg-grey-10 text-white' : selectedPage == tableIndex }"
+            :ripple="false"
+            flat
+            @click="selectedPage = tableIndex">
+            {{ parseInt(tableIndex) + 1 }} p
+          </q-btn>
+        </div>
 
-            </div>
-          </q-carousel-slide>
-        </q-carousel>
+        <div>
+          <q-carousel
+            v-model="selectedPage"
+            swipeable
+            infinite
+            style="height: 90vh">
+            <q-carousel-slide
+              v-for="(menuTableIndex, tableIndex) in ds(currentStore.menu_table_ids)"
+              :key="tableIndex"
+              :name="tableIndex"
+              class="row wrap justify-center">
+              <div
+                class="q-px-xs"
+                style="width: 100vw; max-width: 400px">
+
+                <div class="text-center text-h5 text-orange q-pt-md">
+                  {{ allMenuTables[menuTableIndex].menu_table_title }}
+                </div>
+                <div class="q-py-lg">
+                  <q-separator size="4px" color="orange" inset />
+                </div>
+                <div v-if="allMenuTables[menuTableIndex].menu_table_subtitle.length > 0"
+                  class="text-grey-8">
+                  * {{ allMenuTables[menuTableIndex].menu_table_subtitle }}
+                </div>
+              
+                <q-list>
+                  <q-item 
+                    v-for="menuIndex in ds(allMenuTables[menuTableIndex].menu_ids)"
+                    :key="menuIndex"
+                    @click="openMenuDialog(menuIndex)"
+                    clickable v-ripple>
+                    <q-item-section>
+                      <q-item-label class="text-h6">
+                        {{ allMenus[menuIndex].menu_title }}
+                      </q-item-label> 
+                      <q-item-label class="text-subtitle2 text-grey-6">
+                        {{ allMenus[menuIndex].menu_subtitle }}
+                      </q-item-label>
+                      <q-item-label class="text-subtitle2 text-grey-6">
+                        {{ convertPrice(allMenus[menuIndex].menu_price) }}원
+                      </q-item-label>
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-img
+                        fit="fill"
+                        no-transition no-spinner
+                        :src="baseURL + '/static/images/menu/' + menuIndex + '.jpg'"
+                        style="height: 100px; width: 100px">
+                        <template v-slot:error>
+                          <div class="absolute-full flex flex-center bg-grey-4 text-white">
+                          </div>
+                        </template>
+                      </q-img>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+
+              </div>
+            </q-carousel-slide>
+          </q-carousel>
+        </div>
+      </div>
+      <div v-else>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn
+            v-for="tableIndex in 10"
+            :key="tableIndex"
+            :class="{ 'bg-grey-4' : selectedPage2 != tableIndex, 'bg-grey-10 text-white' : selectedPage2 == tableIndex }"
+            :ripple="false"
+            flat
+            @click="selectedPage2 = tableIndex">
+            {{ parseInt(tableIndex)}} p
+          </q-btn>
+        </div>
+    
+        <div>
+          <q-carousel
+            v-model="selectedPage2"
+            swipeable
+            infinite
+            style="height: 90vh">
+            <q-carousel-slide
+              v-for="(tableIndex) in 10"
+              :key="tableIndex"
+              :name="tableIndex"
+              class="row wrap justify-center">
+              <div
+                class=""
+                style="width: 100vw; max-width: 400px">
+                <q-img
+                  fit="fill"
+                  no-transition no-spinner
+                  :src="baseURL + '/static/images/menuTable/Sample_data_' + tableIndex + '.png'">
+                  <template v-slot:error>
+                    <div class="absolute-full flex flex-center bg-grey-4 text-white">
+                    </div>
+                  </template>
+                </q-img>
+              </div>
+            </q-carousel-slide>
+          </q-carousel>
+        </div>
       </div>
     </div>
+  
     
     <q-dialog
       v-model="isOpenMenuDialog"
@@ -319,6 +367,7 @@ export default defineComponent({
     }
 
     function calTotalPrice() {
+      //console.log(currentMenuOption.value)
       // menu price, menu add price 계산
       var menuId = currentMenuOption.value.menu_id;
       var menuInfo = allMenus.value[menuId];
@@ -361,7 +410,7 @@ export default defineComponent({
 
       //insert cart menuId, selectedInfo
       var menuId = currentMenuOption.value.menu_id;
-      insertCart(menuId, currentMenuOption);
+      insertCart(menuId, currentMenuOption.value);
 
       //TODO duplicated menuId
       //TODO to server
@@ -384,6 +433,8 @@ export default defineComponent({
       calTotalPrice,
       
       addToCart,
+      menuOption: ref(true),
+      selectedPage2: ref(1),
     };
   },
 });
