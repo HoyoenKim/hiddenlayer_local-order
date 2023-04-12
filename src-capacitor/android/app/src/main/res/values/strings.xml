@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">로컬오더</string>
-    <string name="title_activity_main">로컬오더</string>
+    <string name="app_name">내앞의메뉴</string>
+    <string name="title_activity_main">내앞의메뉴</string>
     <string name="package_name">hiddenlayer.localorder</string>
     <string name="custom_url_scheme">hiddenlayer.localorder</string>
 </resources>
