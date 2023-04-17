@@ -39,6 +39,7 @@ import { storeToRefs } from "pinia";
 import { api, baseURL } from "boot/axios";
 import { useRouteInfo } from "src/stores/routeInfo";
 import { useStoreInfo } from "src/stores/storeInfo";
+//import { Geolocation } from '@capcitor/geolocation';
 
 import SelectedStore from "components/SelectedStore.vue";
 
@@ -114,6 +115,17 @@ export default defineComponent({
         });
       });
     }
+
+    //const position = ref('determining...')
+//
+    //function getCurrentPosition() {
+    //  Geolocation.getCurrentPosition().then(newPosition => {
+    //    console.log('Current', newPosition)
+    //    position.value = newPosition
+    //  })
+    //}
+
+    let geoId
     
     onMounted(() => {
       setHeaderTab("near");
@@ -123,12 +135,27 @@ export default defineComponent({
       }
       else {
         const script = document.createElement("script");
-        script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=cc41afe829f5357f1b44183ca6956c7c&autoload=false"
+        script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=cc41afe829f5357f1b44183ca6956c7c&autoload=false"
+        //script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=05e72bb9594e78550139efa85c9d0faec&autoload=false"
         script.onload = () => window.kakao.maps.load(initMap);
         
         document.head.appendChild(script);
       }
+
+      //getCurrentPosition();
+//
+      //// we start listening
+      //geoId = Geolocation.watchPosition({}, (newPosition, err) => {
+      //  console.log('New GPS position')
+      //  position.value = newPosition
+      //})
+
     })
+
+    //onBeforeUnmount(() => {
+    //  // we do cleanup
+    //  Geolocation.clearWatch(geoId)
+    //})
     
     return {
       storeShow,

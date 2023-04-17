@@ -56,45 +56,49 @@
         </q-btn>
       </q-toolbar>
       
-      <div v-else
-        class="q-px-none q-pt-sm q-pb-md">
-        <q-tabs
-          v-model="headerTab"
-          class="q-pb-sm text-subtitle1 text-bold"
-          :breakpoint="100"
-          :outside-arrows="true"
-          :mobile-arrows="true"
-          align="left"
-          active-class="bg-white text-black"
-          content-class="bg-white text-grey-5"
-          indicator-color="transparent"
-          @click="headerTabRoute()">
-          <q-tab name="near" :ripple="false">
-            근처로
-          </q-tab>
-          <q-tab name="event" :ripple="false">
-            이벤트
-          </q-tab>
-          <q-tab name="list" :ripple="false">
-            리스트
-          </q-tab>
-        </q-tabs>
-        <q-input
-          class="q-px-sm"
-          v-model="searchStore"
-          dense
-          outlined
-          label-slot
-          color="black"
-          type="search">
-          <template v-slot:label>
-            <div class="text-grey-5">검색어를 입력하세요.</div>
-          </template>
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-      </div>
+
+        <q-toolbar v-else class="column q-pb-md">
+          <div class="fit">
+            <q-tabs
+              v-model="headerTab"
+              class="q-pb-sm text-subtitle1 text-bold"
+              :breakpoint="100"
+              :outside-arrows="true"
+              :mobile-arrows="true"
+              align="left"
+              active-class="bg-white text-black"
+              content-class="bg-white text-grey-5"
+              indicator-color="transparent"
+              @click="headerTabRoute()">
+              <q-tab name="near" :ripple="false">
+                근처로
+              </q-tab>
+              <q-tab name="event" :ripple="false">
+                이벤트
+              </q-tab>
+              <q-tab name="list" :ripple="false">
+                리스트
+              </q-tab>
+            </q-tabs>
+          </div>
+          <div class="fit">
+            <q-input
+              class="q-px-sm"
+              v-model="searchStore"
+              dense
+              outlined
+              label-slot
+              color="black"
+              type="search">
+              <template v-slot:label>
+                <div class="text-grey-5">검색어를 입력하세요.</div>
+              </template>
+              <template v-slot:append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </div>
+        </q-toolbar>
     </q-header>
 
     <q-drawer

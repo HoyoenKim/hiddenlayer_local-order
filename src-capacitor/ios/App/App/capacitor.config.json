@@ -1,7 +1,8 @@
 {
 	"appId": "hiddenlayer.localorder",
-	"appName": "LocalOrder",
+	"appName": "내앞의메뉴",
 	"bundledWebRuntime": false,
 	"npmClient": "npm",
-	"webDir": "www"
+	"webDir": "www",
+	"server": {}
 }
