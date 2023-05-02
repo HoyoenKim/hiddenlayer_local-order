@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh lpR fFr">
     <q-header
-      class="bg-white" 
+      class="bg-white"
       height-hint="98">
       <q-toolbar
         v-if="currentPath == '/brand' || currentPath == '/menu' || currentPath == '/event' || currentPath == '/nfc'"
@@ -16,7 +16,8 @@
           {{ currentStore.store_title }}
         </q-toolbar-title>
         <q-btn
-          flat
+          outline
+          round
           @click="toPage('/cart')">
           <q-icon name="shopping_cart" />
           <q-badge
@@ -26,7 +27,7 @@
           </q-badge>
         </q-btn>
       </q-toolbar>
-      
+
       <q-toolbar
         v-else-if="currentPath == '/cart'"
         class="bg-white text-black q-px-none">
@@ -45,7 +46,7 @@
           <q-icon name="home" />
         </q-btn>
       </q-toolbar>
-      
+
       <q-toolbar
         v-else-if="currentPath == '/check'"
         class="bg-white text-black q-px-none">
@@ -55,7 +56,7 @@
           <q-icon name="arrow_back" />
         </q-btn>
       </q-toolbar>
-      
+
 
         <q-toolbar v-else class="column q-pb-md">
           <div class="fit">
@@ -73,9 +74,9 @@
               <q-tab name="near" :ripple="false">
                 근처로
               </q-tab>
-              <q-tab name="event" :ripple="false">
+              <!--<q-tab name="event" :ripple="false">
                 이벤트
-              </q-tab>
+              </q-tab>-->
               <q-tab name="list" :ripple="false">
                 리스트
               </q-tab>
@@ -173,17 +174,17 @@
             <q-icon class="q-pb-xs" size="sm" name="menu_book"/>
             메뉴판
           </q-tab>
-          <q-tab name="event" :ripple="false">
+          <!--<q-tab name="event" :ripple="false">
             <q-icon class="q-pb-xs" size="sm" name="event"/>
             이벤트들
           </q-tab>
           <q-tab name="brand" :ripple="false">
             <q-icon class="q-pb-xs" size="sm" name="store"/>
             가게 소개
-          </q-tab>
-          <q-tab name="check" :ripple="false"> 
+          </q-tab>-->
+          <q-tab name="check" :ripple="false">
             <q-icon class="q-pb-xs" size="sm" name="favorite"/>
-            찜목록
+            내정보
           </q-tab>
         </q-tabs>
       </div>
@@ -195,7 +196,7 @@
     position="bottom">
     <q-card
       style="width: 100vw; max-width: 400px">
-      
+
       <q-card-section
         class="q-pa-none bg-grey-4 row justify-end">
         <q-btn
@@ -204,11 +205,11 @@
           :ripple="false"
           round flat v-close-popup/>
       </q-card-section>
-      
+
       <q-card-section>
         <div class="text-h5 text-bold text-center">주문 최종 확인</div>
       </q-card-section>
-     
+
       <q-separator />
 
       <!--<q-card-section class="q-px-sm">
@@ -231,9 +232,9 @@
                 </q-item-section>
               </q-item>
             </q-card-section>
-            
+
             <q-separator />
-           
+
             <q-card-section class="q-px-sm">
               <div class="q-px-md q-pb-sm text-h6 text-bold">
                 가격
@@ -252,7 +253,7 @@
                 </template>
               </q-option-group>
             </q-card-section>
-            
+
             <q-separator />
 
             <div
@@ -315,9 +316,9 @@
                   @click="currentMenuOption.number++"/>
               </div>
             </q-card-section>
-            
+
             <q-separator />
-            
+
             <q-card-section class="q-px-sm q-pb-sm row justify-between">
               <div class="q-px-md q-pb-sm  text-h6 text-bold">
                 총 가격
@@ -333,7 +334,7 @@
       </q-card-section>
       <q-card-section class="q-pa-sm">
         <q-card flat bordered>
-            
+
           <q-card-section class="q-px-sm q-pb-none">
             <div class="q-px-md q-pb-md text-h6 text-bold">
               닉네임 *
@@ -515,20 +516,20 @@ export default defineComponent({
     const cartStore = useCartStore();
     const { cart, name, phone, roomNumber, password, orderValidation } =
       storeToRefs(cartStore);
-    const { sendCartToServer, resetCart, resetUser, convertPrice } = cartStore;
-    
+    const { sendCartToServer, resetCart, saveUser, convertPrice } = cartStore;
+
     // getter error why?
     const cartLength = computed(() => {
       return Object.keys(cart.value).length;
     });
-    
+
     const existCart = computed(() => {
       if (Object.keys(cart.value).length == 0) {
         return false;
       }
       return true;
     });
-    
+
     const totalPrice = computed(() => {
       var price = 0;
       for (const [menuId, menu] of Object.entries(cart.value)) {
@@ -621,7 +622,7 @@ export default defineComponent({
             router.push({ path: "/brand" })
           }
         }
-        
+
       }
     }
 
@@ -675,7 +676,7 @@ export default defineComponent({
       setIsForm(true);
       //checkOrder();
       resetCart();
-      resetUser();
+      saveUser();
     }
 
     function getOrderDate() {

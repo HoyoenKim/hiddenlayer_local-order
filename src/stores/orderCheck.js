@@ -6,9 +6,9 @@ export const useOrderCheckStore = defineStore("orderCheck", {
   state: () => ({
     orders: LocalStorage.getItem("orders") || [],
     isForm: true,
-    Name: "",
-    Phone: "",
-    Password: "",
+    Name: LocalStorage.getItem("Name") || "",
+    Phone: LocalStorage.getItem("Phone") || "",
+    Password: LocalStorage.getItem("Password") || "",
   }),
 
   getters: {},
@@ -42,12 +42,20 @@ export const useOrderCheckStore = defineStore("orderCheck", {
     },
     setName(name) {
       this.Name = name;
+      LocalStorage.set("Name", name);
     },
     setPhone(phone) {
       this.Phone = phone;
+      LocalStorage.set("Phone", phone);
     },
     setPassword(password) {
       this.Password = password;
+      LocalStorage.set("Password", password);
     },
+    setAllInfo() {
+      LocalStorage.set("Name", this.Name);
+      LocalStorage.set("Phone", this.Phone);
+      LocalStorage.set("Password", this.Password);
+    }
   },
 });

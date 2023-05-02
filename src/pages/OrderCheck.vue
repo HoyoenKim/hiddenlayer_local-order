@@ -39,7 +39,7 @@
           </template>
         </q-input>
         <div>
-          <q-btn label="확인" type="submit" color="primary" />
+          <q-btn label="확인" type="submit" color="primary" @click="setAllInfo()"/>
           <q-btn
             label="취소"
             type="reset"
@@ -184,9 +184,10 @@
               @click="alert = true"
               >송금 하기 (미송금)</q-btn
             >
-            <q-btn :ripple="false" v-else flat>송금 하기 (송금 완료)</q-btn>
+            <q-btn :ripple="false" v-else flat>계산 완료</q-btn>
             <q-btn
               :ripple="false"
+              v-if="order.is_payed == 0"
               color="blue"
               flat
               @click="deleteOrderSet(order.order_id, orderIndex)"
@@ -264,11 +265,11 @@ export default defineComponent({
     const orderCheckStore = useOrderCheckStore();
     const { orders, isForm, Name, Phone, Password } =
       storeToRefs(orderCheckStore);
-    const { checkOrder, setIsForm, deleteOrder } = orderCheckStore;
+    const { checkOrder, setIsForm, deleteOrder, setAllInfo } = orderCheckStore;
 
     onMounted(() => {
       setBottomTab('check');
-    });    
+    });
 
     // to fill forms
     var nameRef = ref(null);
@@ -380,6 +381,7 @@ export default defineComponent({
       currentOrderIndex,
       deleteOrderSet,
       deleteOrder,
+      setAllInfo,
     };
   },
 });

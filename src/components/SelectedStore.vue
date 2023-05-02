@@ -8,7 +8,7 @@
         v-model="storeSlide"
         class="q-pa-none"
         swipeable infinite
-        style="border-radius: 16px 16px 0 0">      
+        style="border-radius: 16px 16px 0 0">
         <q-carousel-slide
           v-for="storeImageNum in parseInt(currentStore.store_images_nums)" :key="storeImageNum" :name="storeImageNum"
           class="fit q-pa-none bg-grey-4">
@@ -26,14 +26,14 @@
       class="q-pa-none row justify-center bg-grey-4">
       <div
         v-for="storeImageNum in parseInt(currentStore.store_images_nums)" :key="storeImageNum"
-        class="q-px-xs" 
+        class="q-px-xs"
         @click="storeSlide = storeImageNum">
         <q-icon
           v-if="storeImageNum == storeSlide"
           class="text-blue-9" name="circle"
           style="font-size: 0.5em;" />
         <q-icon
-          v-else 
+          v-else
           class="text-white" name="circle"
           style="font-size: 0.5em;"/>
       </div>
@@ -41,7 +41,8 @@
   </q-card>
   <q-card
     flat
-    style="font-size: 18px">
+    style="font-size: 18px"
+    @click="toMenuPage(currentStore)">
     <q-card-section
       class="q-pa-none q-pt-xs">
       <q-list>
@@ -50,6 +51,10 @@
           <q-item-section>
             <q-item-label>
               {{ currentStore.store_title }}
+              <q-chip color="white">
+                <q-avatar color="white" text-color="yellow" font-size="1em" icon="star"/>
+                4.9
+              </q-chip>
             </q-item-label>
             <q-item-label
               style="font-size: 14px" caption>
@@ -57,11 +62,8 @@
             </q-item-label>
           </q-item-section>
           <q-item-section side top>
-            <q-item-label caption>
-              <q-chip color="white">
-                <q-avatar color="white" text-color="yellow" font-size="1em" icon="star"/>
-                4.9
-              </q-chip>
+            <q-item-label style="font-size: 18px" caption>
+              <q-btn outline>주문하러 가기</q-btn>
             </q-item-label>
           </q-item-section>
         </q-item>
@@ -90,7 +92,7 @@
   import { api, baseURL } from "boot/axios";
   import { useRouteInfo } from "src/stores/routeInfo";
   import { useStoreInfo } from "src/stores/storeInfo";
-  
+
   export default defineComponent({
     name: "StorePage",
     components: {},
@@ -102,17 +104,17 @@
     setup() {
       // routing
       const router = useRouter();
-      
+
       // route, utils
       const routeInfoStore = useRouteInfo();
       const { headerTab, bottomTab } = storeToRefs(routeInfoStore);
       const { setHeaderTab, setBottomTab, ds } = routeInfoStore;
-  
+
       // store information
       const storeInfo = useStoreInfo();
       const { allStores } = storeToRefs(storeInfo);
       const { setCurrentStore } = storeInfo;
-  
+
       // to brand page
       // to menu page
       function toMenuPage(store_Info) {

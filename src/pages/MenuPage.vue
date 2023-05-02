@@ -1,13 +1,20 @@
 <template>
   <q-page class="flex-center">
     <div v-if="Object.keys(currentStore).length != 0">
-      <q-toggle
+      <!--<q-toggle
         v-model="menuOption"
         color="primary"
-        keep-color/>
-      
+        keep-color/>-->
+
       <div v-if="menuOption">
         <div class="q-pa-md q-gutter-sm">
+          <q-btn
+            :class="{ 'bg-grey-4' : selectedPage != ds(currentStore.menu_table_ids).length, 'bg-grey-10 text-white' : selectedPage == ds(currentStore.menu_table_ids).length }"
+            :ripple="false"
+            flat
+            @click="selectedPage = ds(currentStore.menu_table_ids).length">
+            메뉴판
+          </q-btn>
           <q-btn
             v-for="(menuTableIndex, tableIndex) in ds(currentStore.menu_table_ids)"
             :key="tableIndex"
@@ -44,9 +51,9 @@
                   class="text-grey-8">
                   * {{ allMenuTables[menuTableIndex].menu_table_subtitle }}
                 </div>
-              
+
                 <q-list>
-                  <q-item 
+                  <q-item
                     v-for="menuIndex in ds(allMenuTables[menuTableIndex].menu_ids)"
                     :key="menuIndex"
                     @click="openMenuDialog(menuIndex)"
@@ -54,7 +61,7 @@
                     <q-item-section>
                       <q-item-label class="text-h6">
                         {{ allMenus[menuIndex].menu_title }}
-                      </q-item-label> 
+                      </q-item-label>
                       <q-item-label class="text-subtitle2 text-grey-6">
                         {{ allMenus[menuIndex].menu_subtitle }}
                       </q-item-label>
@@ -79,6 +86,23 @@
 
               </div>
             </q-carousel-slide>
+            <q-carousel-slide
+            class="row wrap justify-center"
+            :name="ds(currentStore.menu_table_ids).length">
+            <div
+            class=""
+            style="width: 100vw; max-width: 400px">
+            <q-img
+              fit="fill"
+              no-transition no-spinner
+              :src="baseURL + '/static/images/menuTable/Sample_data_1.png'">
+              <template v-slot:error>
+                <div class="absolute-full flex flex-center bg-grey-4 text-white">
+                </div>
+              </template>
+            </q-img>
+          </div>
+            </q-carousel-slide>
           </q-carousel>
         </div>
       </div>
@@ -94,7 +118,7 @@
             {{ parseInt(tableIndex)}} p
           </q-btn>
         </div>
-    
+
         <div>
           <q-carousel
             v-model="selectedPage2"
@@ -111,7 +135,7 @@
                 style="width: 100vw; max-width: 400px">
                 <q-img
                   fit="fill"
-                  no-transition no-spinner
+                  no-transition
                   :src="baseURL + '/static/images/menuTable/Sample_data_' + tableIndex + '.png'">
                   <template v-slot:error>
                     <div class="absolute-full flex flex-center bg-grey-4 text-white">
@@ -124,14 +148,14 @@
         </div>
       </div>
     </div>
-  
-    
+
+
     <q-dialog
       v-model="isOpenMenuDialog"
       position="bottom">
       <q-card
         style="width: 100vw; max-width: 450px">
-        
+
         <q-card-section class="q-pa-none bg-grey-4 row justify-end">
           <q-btn
             size="sm"
@@ -148,7 +172,7 @@
             :src="baseURL + '/static/images/menu/' + currentMenuId + '.jpg'"
             style="width: 200px; height: 200px">
             <template v-slot:error>
-              <div class="absolute-full flex flex-center bg-grey-4 text-white"> 
+              <div class="absolute-full flex flex-center bg-grey-4 text-white">
               </div>
             </template>
           </q-img>
@@ -185,7 +209,6 @@
         </q-card-section>
 
         <q-separator />
-        
         <div
           v-for="(menuAddOption, addOptionIndex) in ds(allMenus[currentMenuId].menu_additional_options)"
           :key="addOptionIndex">
@@ -259,7 +282,6 @@
         </q-card-section>
 
         <q-separator />
-        
         <q-card-actions class="q-pa-md" vertical>
           <q-btn
             class="text-white text-h6 bg-orange"
@@ -269,7 +291,6 @@
             장바구니 담기
           </q-btn>
         </q-card-actions>
-      
       </q-card>
     </q-dialog>
   </q-page>
@@ -333,7 +354,7 @@ export default defineComponent({
     function openMenuDialog(menuId) {
       // initial object
       isOpenMenuDialog.value = true;
-      
+
       // selected menu id
       currentMenuId.value = menuId;
 
@@ -351,7 +372,7 @@ export default defineComponent({
       // init price option
       var price_options = ds(allMenus.value[currentMenuId.value].menu_price_options);
       currentMenuOption.value.price_option_value = price_options.options[0].value
-      
+
       // init add option
       var add_options = ds(allMenus.value[currentMenuId.value].menu_additional_options);
       for(const add_option of add_options) {
@@ -431,7 +452,7 @@ export default defineComponent({
       currentMenuOption,
       openMenuDialog,
       calTotalPrice,
-      
+
       addToCart,
       menuOption: ref(true),
       selectedPage2: ref(1),
