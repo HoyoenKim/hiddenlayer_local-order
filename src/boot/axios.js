@@ -1,8 +1,8 @@
 import { boot } from "quasar/wrappers";
 import axios from "axios";
 
-//const baseURL = "http://localhost:3001";
-//const baseURL = "http://192.168.0.100:3000";
+//const baseURL = "https://localhost:3000";
+const baseURL = "https://192.168.0.11:3000";
 //const baseURL = "http://210.109.43.14:10005";
 
 // 1. niginx proxy manager (210.109.43.14:81) 에서 192.168.0.82:3000 을 10005 포트로 포워딩 설정
@@ -12,7 +12,7 @@ import axios from "axios";
 
 //const baseURL = "http://18.118.221.107:3000";
 
-const baseURL = "http://18.118.221.107:3001"
+//const baseURL = "http://18.118.221.107:3001"
 const api = axios.create({ baseURL: baseURL });
 
 export default boot(({ app }) => {

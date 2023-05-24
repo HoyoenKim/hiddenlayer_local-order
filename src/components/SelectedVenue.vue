@@ -1,10 +1,10 @@
 <template>
   <q-card
     flat bordered
-    @click="toMenuPage(currentStore)">
+    @click="toVenuPage(currentVenue)">
     <q-card-section class="q-pa-none">
-      <div v-if="parseInt(currentStore.store_images_nums) == 0"
-        class="bg-grey-4 flex flex-center"
+      <div v-if="parseInt(currentVenue.venue_images_nums) == 0"
+        class="bg-grey flex flex-center"
         style="height: 400px;">
         <div>
           이미지 준비중입니다.
@@ -12,19 +12,19 @@
       </div>
       <q-carousel
         v-else
-        v-model="storeSlide"
+        v-model="venueSlide"
         class="q-pa-none"
         swipeable infinite
         style="height: 400px;">
         <q-carousel-slide
-          v-for="storeImageNum in parseInt(currentStore.store_images_nums)" :key="storeImageNum" :name="storeImageNum"
+          v-for="venuImageNum in parseInt(currentVenue.venue_images_nums)" :key="venuImageNum" :name="venuImageNum"
           class=" q-pa-none bg-grey-4">
           <q-img
             no-transition
             no-spinner
             class="fit"
-            fit="fill"
-            :src="baseURL + '/static/images/store/' + currentStore.store_id + '/' + storeImageNum + '.jpg'"
+            fit="contain"
+            :src="baseURL + '/static/images/venue/' + currentVenue.venue_id + '/' + venuImageNum + '.jpg'"
             style="max-height: 400px;"/>
         </q-carousel-slide>
       </q-carousel>
@@ -32,11 +32,11 @@
     <q-card-section
       class="q-pa-none row justify-center bg-grey-4">
       <div
-        v-for="storeImageNum in parseInt(currentStore.store_images_nums)" :key="storeImageNum"
+        v-for="venuImageNum in parseInt(currentVenue.venue_images_nums)" :key="venuImageNum"
         class="q-px-xs"
-        @click="storeSlide = storeImageNum">
+        @click="venueSlide = venuImageNum">
         <q-icon
-          v-if="storeImageNum == storeSlide"
+          v-if="venuImageNum == venueSlide"
           class="text-blue-9" name="circle"
           style="font-size: 0.5em;" />
         <q-icon
@@ -49,7 +49,7 @@
   <q-card
     flat
     style="font-size: 18px"
-    @click="toMenuPage(currentStore)">
+    @click="toVenuPage(currentVenue)">
     <q-card-section
       class="q-pa-none q-pt-xs">
       <q-list>
@@ -57,11 +57,11 @@
           class="q-px-xs q-pb-none">
           <q-item-section>
             <q-item-label>
-              {{ currentStore.store_title }}
+              {{ currentVenue.venue_title }}
             </q-item-label>
             <q-item-label
               style="font-size: 14px" caption>
-                {{ currentStore.store_description }}
+                {{ currentVenue.venue_description }}
             </q-item-label>
           </q-item-section>
           <q-item-section side top>
@@ -128,10 +128,10 @@
   import { useStoreInfo } from "src/stores/storeInfo";
 
   export default defineComponent({
-    name: "StorePage",
+    name: "SelectedVenue",
     components: {},
 		props: {
-			currentStore: {
+			currentVenue: {
 				type: Object
 			}
 		},
@@ -147,21 +147,21 @@
       // store information
       const storeInfo = useStoreInfo();
       const { allStores } = storeToRefs(storeInfo);
-      const { setCurrentStore } = storeInfo;
+      const { setCurrentStore, setCurrentVenue } = storeInfo;
 
       // to brand page
       // to menu page
-      function toMenuPage(store_Info) {
-        setCurrentStore(store_Info);
-        router.push({ path: "/brand" }); //for develo
+      function toVenuPage(venue_info) {
+        setCurrentVenue(venue_info);
+        router.push({ path: "/venue" }); //for develo
       }
 
       return {
-        storeSlide: ref(1),
+        venueSlide: ref(1),
         ds,
         baseURL,
         orderType: ref(["테이블 주문 가능", "포장 가능", "배달 가능"]),
-        toMenuPage,
+        toVenuPage,
       };
     },
   });

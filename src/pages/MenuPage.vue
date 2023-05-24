@@ -1,299 +1,249 @@
 <template>
-  <q-page class="flex-center">
+  <q-page>
     <div v-if="Object.keys(currentStore).length != 0">
-      <!--<q-toggle
-        v-model="menuOption"
-        color="primary"
-        keep-color/>-->
-
-      <div v-if="menuOption">
-        <div class="q-pa-md q-gutter-sm">
-          <q-btn
-            :class="{ 'bg-grey-4' : selectedPage != ds(currentStore.menu_table_ids).length, 'bg-grey-10 text-white' : selectedPage == ds(currentStore.menu_table_ids).length }"
-            :ripple="false"
-            flat
-            @click="selectedPage = ds(currentStore.menu_table_ids).length">
-            메뉴판
-          </q-btn>
-          <q-btn
-            v-for="(menuTableIndex, tableIndex) in ds(currentStore.menu_table_ids)"
-            :key="tableIndex"
-            :class="{ 'bg-grey-4' : selectedPage != tableIndex, 'bg-grey-10 text-white' : selectedPage == tableIndex }"
-            :ripple="false"
-            flat
-            @click="selectedPage = tableIndex">
-            {{ parseInt(tableIndex) + 1 }} p
-          </q-btn>
-        </div>
-
-        <div>
-          <q-carousel
-            v-model="selectedPage"
-            swipeable
-            infinite
-            style="height: 90vh">
-            <q-carousel-slide
-              v-for="(menuTableIndex, tableIndex) in ds(currentStore.menu_table_ids)"
-              :key="tableIndex"
-              :name="tableIndex"
-              class="row wrap justify-center">
-              <div
-                class="q-px-xs"
-                style="width: 100vw; max-width: 400px">
-
-                <div class="text-center text-h5 text-orange q-pt-md">
-                  {{ allMenuTables[menuTableIndex].menu_table_title }}
-                </div>
-                <div class="q-py-lg">
-                  <q-separator size="4px" color="orange" inset />
-                </div>
-                <div v-if="allMenuTables[menuTableIndex].menu_table_subtitle.length > 0"
-                  class="text-grey-8">
-                  * {{ allMenuTables[menuTableIndex].menu_table_subtitle }}
-                </div>
-
-                <q-list>
-                  <q-item
-                    v-for="menuIndex in ds(allMenuTables[menuTableIndex].menu_ids)"
-                    :key="menuIndex"
-                    @click="openMenuDialog(menuIndex)"
-                    clickable v-ripple>
-                    <q-item-section>
-                      <q-item-label class="text-h6">
-                        {{ allMenus[menuIndex].menu_title }}
-                      </q-item-label>
-                      <q-item-label class="text-subtitle2 text-grey-6">
-                        {{ allMenus[menuIndex].menu_subtitle }}
-                      </q-item-label>
-                      <q-item-label class="text-subtitle2 text-grey-6">
-                        {{ convertPrice(allMenus[menuIndex].menu_price) }}원
-                      </q-item-label>
-                    </q-item-section>
-                    <q-item-section side>
-                      <q-img
-                        fit="fill"
-                        no-transition no-spinner
-                        :src="baseURL + '/static/images/menu/' + menuIndex + '.jpg'"
-                        style="height: 100px; width: 100px">
-                        <template v-slot:error>
-                          <div class="absolute-full flex flex-center bg-grey-4 text-white">
-                          </div>
-                        </template>
-                      </q-img>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-
-              </div>
-            </q-carousel-slide>
-            <q-carousel-slide
-            class="row wrap justify-center"
-            :name="ds(currentStore.menu_table_ids).length">
-            <div
-            class=""
-            style="width: 100vw; max-width: 400px">
-            <q-img
-              fit="fill"
-              no-transition no-spinner
-              :src="baseURL + '/static/images/menuTable/Sample_data_1.png'">
-              <template v-slot:error>
-                <div class="absolute-full flex flex-center bg-grey-4 text-white">
-                </div>
-              </template>
-            </q-img>
-          </div>
-            </q-carousel-slide>
-          </q-carousel>
-        </div>
+      <div class="q-pa-sm q-pt-md q-gutter-sm">
+        <q-btn
+          :class="{ 'bg-grey-4' : selectedPage != ds(currentStore.menu_table_ids).length, 'bg-grey-10 text-white' : selectedPage == ds(currentStore.menu_table_ids).length }"
+          :ripple="false"
+          flat
+          @click="selectedPage = ds(currentStore.menu_table_ids).length">
+          메뉴판
+        </q-btn>
+        <q-btn
+          v-for="(menuTableIndex, tableIndex) in ds(currentStore.menu_table_ids)"
+          :key="tableIndex"
+          :class="{ 'bg-grey-4' : selectedPage != tableIndex, 'bg-grey-10 text-white' : selectedPage == tableIndex }"
+          :ripple="false"
+          flat
+          @click="selectedPage = tableIndex">
+          {{ parseInt(tableIndex) + 1 }} p
+        </q-btn>
       </div>
-      <div v-else>
-        <div class="q-pa-md q-gutter-sm">
-          <q-btn
-            v-for="tableIndex in 10"
+      <div>
+        <q-carousel
+          v-model="selectedPage"
+          swipeable
+          infinite
+          class="fit">
+          <q-carousel-slide
+            v-for="(menuTableIndex, tableIndex) in ds(currentStore.menu_table_ids)"
+            class="row wrap justify-center"
             :key="tableIndex"
-            :class="{ 'bg-grey-4' : selectedPage2 != tableIndex, 'bg-grey-10 text-white' : selectedPage2 == tableIndex }"
-            :ripple="false"
-            flat
-            @click="selectedPage2 = tableIndex">
-            {{ parseInt(tableIndex)}} p
-          </q-btn>
-        </div>
-
-        <div>
-          <q-carousel
-            v-model="selectedPage2"
-            swipeable
-            infinite
-            style="height: 90vh">
-            <q-carousel-slide
-              v-for="(tableIndex) in 10"
-              :key="tableIndex"
-              :name="tableIndex"
-              class="row wrap justify-center">
-              <div
-                class=""
-                style="width: 100vw; max-width: 400px">
-                <q-img
-                  fit="fill"
-                  no-transition
-                  :src="baseURL + '/static/images/menuTable/Sample_data_' + tableIndex + '.png'">
-                  <template v-slot:error>
-                    <div class="absolute-full flex flex-center bg-grey-4 text-white">
-                    </div>
-                  </template>
-                </q-img>
+            :name="tableIndex">
+            <div style="width: 100vw; max-width: 500px">
+              <div class="text-center text-h5 text-orange q-pt-md">
+                {{ allMenuTables[menuTableIndex].menu_table_title }}
               </div>
-            </q-carousel-slide>
-          </q-carousel>
-        </div>
+              <div class="q-py-lg">
+                <q-separator size="4px" color="orange" inset />
+              </div>
+              <div
+                v-if="allMenuTables[menuTableIndex].menu_table_subtitle.length > 0"
+                class="text-grey-8">
+                * {{ allMenuTables[menuTableIndex].menu_table_subtitle }}
+              </div>
+              <q-list>
+                <q-item
+                  v-for="menuIndex in ds(allMenuTables[menuTableIndex].menu_ids)"
+                  :key="menuIndex"
+                  @click="openMenuDialog(menuIndex)"
+                  clickable v-ripple>
+                  <q-item-section>
+                    <q-item-label class="text-h6">
+                      {{ allMenus[menuIndex].menu_title }}
+                    </q-item-label>
+                    <q-item-label class="text-subtitle2 text-grey-6">
+                      {{ allMenus[menuIndex].menu_subtitle }}
+                    </q-item-label>
+                    <q-item-label class="text-subtitle2 text-grey-6">
+                      {{ convertPrice(allMenus[menuIndex].menu_price) }}원
+                    </q-item-label>
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-img
+                      fit="fill"
+                      no-transition no-spinner
+                      :src="baseURL + '/static/images/menu/' + menuIndex + '.jpg'"
+                      style="height: 100px; width: 100px">
+                      <template v-slot:error>
+                        <div class="absolute-full flex flex-center bg-grey-4 text-white">
+                        </div>
+                      </template>
+                    </q-img>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </div>
+          </q-carousel-slide>
+          <q-carousel-slide
+            class="row wrap justify-center q-pa-none"
+            :name="ds(currentStore.menu_table_ids).length">
+            <div style="width: 100vw; max-width: 500px">
+              <q-img
+                class="fit"
+                fit="fill"
+                :src="baseURL + '/static/images/menuTable/' + ds(currentStore.menu_table_ids)[0] + '.jpg'">
+                <template v-slot:error>
+                  <div class="absolute-full flex flex-center bg-grey-4 text-black">
+                    이미지 준비중입니다.
+                  </div>
+                </template>
+              </q-img>
+            </div>
+          </q-carousel-slide>
+        </q-carousel>
       </div>
     </div>
+    <div class="q-pa-lg fixed-bottome-right absolute-bottom-right"
+      style="z-index: 1">
+      <q-btn
+        size="lg"
+        outline
+        round
+        @click="toPage('/cart')">
+        <q-icon name="shopping_cart" />
+        <q-badge
+          v-if="existCart"
+          color="red" floating>
+          {{ cartLength }}
+        </q-badge>
+      </q-btn>
+    </div>
 
-
-    <q-dialog
-      v-model="isOpenMenuDialog"
-      position="bottom">
-      <q-card
-        style="width: 100vw; max-width: 450px">
-
-        <q-card-section class="q-pa-none bg-grey-4 row justify-end">
-          <q-btn
-            size="sm"
-            icon="close"
-            :ripple="false"
-            round flat v-close-popup/>
-        </q-card-section>
-
-        <q-card-section class="q-pa-none q-pt-md row justify-center">
-          <q-img
-            no-transition
-            no-spinner
-            fit="fill"
-            :src="baseURL + '/static/images/menu/' + currentMenuId + '.jpg'"
-            style="width: 200px; height: 200px">
-            <template v-slot:error>
-              <div class="absolute-full flex flex-center bg-grey-4 text-white">
-              </div>
-            </template>
-          </q-img>
-        </q-card-section>
-
-        <q-card-section>
-          <q-card flat bordered class="q-pa-md text-center">
-            <q-card-section class="q-pt-sm text-h5">
-              {{ allMenus[currentMenuId].menu_title }}
-            </q-card-section>
-            <q-separator />
-            <q-card-section class="text-caption text-grey q-pb-none">
-              {{ allMenus[currentMenuId].menu_description }}
-            </q-card-section>
-          </q-card>
-        </q-card-section>
-
+  </q-page>
+  <q-dialog
+    v-model="isOpenMenuDialog"
+    position="bottom">
+    <q-card style="width: 100vw; max-width: 450px">
+      <q-card-section class="q-pa-none bg-grey-4 row justify-end">
+        <q-btn
+          size="sm"
+          icon="close"
+          :ripple="false"
+          round flat v-close-popup/>
+      </q-card-section>
+      <q-card-section class="q-pa-none q-pt-md row justify-center">
+        <q-img
+          no-transition
+          no-spinner
+          fit="fill"
+          :src="baseURL + '/static/images/menu/' + currentMenuId + '.jpg'"
+          style="width: 200px; height: 200px">
+          <template v-slot:error>
+            <div class="absolute-full flex flex-center bg-grey-4 text-white">
+            </div>
+          </template>
+        </q-img>
+      </q-card-section>
+      <q-card-section>
+        <q-card flat bordered class="q-pa-md text-center">
+          <q-card-section class="q-pt-sm text-h5">
+            {{ allMenus[currentMenuId].menu_title }}
+          </q-card-section>
+          <q-separator />
+          <q-card-section class="text-caption text-grey q-pb-none">
+            {{ allMenus[currentMenuId].menu_description }}
+          </q-card-section>
+        </q-card>
+      </q-card-section>
+      <q-card-section class="q-px-sm">
+        <div class="q-px-md q-pb-sm text-h6 text-bold">
+          가격
+        </div>
+        <q-option-group
+          v-model="currentMenuOption.price_option_value"
+          :options="ds(allMenus[currentMenuId].menu_price_options).options"
+          color="teal-5">
+          <template v-slot:label="opt">
+            <div class="row justify-between"
+              style="width: 85vw; max-width: 380px">
+              <div class="text-subtitle1">{{ opt.label }}</div>
+              <div class="text-subtitle1">{{ convertPrice(opt.price) }}원</div>
+            </div>
+          </template>
+        </q-option-group>
+      </q-card-section>
+      <q-separator />
+      <div
+        v-for="(menuAddOption, addOptionIndex) in ds(allMenus[currentMenuId].menu_additional_options)"
+        :key="addOptionIndex">
         <q-card-section class="q-px-sm">
-          <div class="q-px-md q-pb-sm text-h6 text-bold">
-            가격
+          <div class="q-px-md q-pb-sm  text-h6 text-bold">
+            {{ menuAddOption.name }}
           </div>
           <q-option-group
-            v-model="currentMenuOption.price_option_value"
-            :options="ds(allMenus[currentMenuId].menu_price_options).options"
+            v-if="menuAddOption.type == 0"
+            v-model="currentMenuOption.add_option_values[addOptionIndex]"
+            :options="menuAddOption.options"
             color="teal-5">
             <template v-slot:label="opt">
               <div class="row justify-between"
                 style="width: 85vw; max-width: 380px">
                 <div class="text-subtitle1">{{ opt.label }}</div>
-                <div class="text-subtitle1">{{ convertPrice(opt.price) }}원</div>
+                <div class="text-subtitle1">+{{ convertPrice(opt.price) }}원</div>
+              </div>
+            </template>
+          </q-option-group>
+          <q-option-group
+            v-else-if="menuAddOption.type == 1"
+            v-model="currentMenuOption.add_option_values[addOptionIndex]"
+            :options="menuAddOption.options"
+            type="checkbox"
+            color="teal-5">
+            <template v-slot:label="opt">
+              <div class="row justify-between"
+                style="width: 85vw; max-width: 380px">
+                <div class="text-subtitle1">{{ opt.label }}</div>
+                <div class="text-subtitle1">+{{ convertPrice(opt.price) }}원</div>
               </div>
             </template>
           </q-option-group>
         </q-card-section>
-
         <q-separator />
-        <div
-          v-for="(menuAddOption, addOptionIndex) in ds(allMenus[currentMenuId].menu_additional_options)"
-          :key="addOptionIndex">
-          <q-card-section class="q-px-sm">
-            <div class="q-px-md q-pb-sm  text-h6 text-bold">
-              {{ menuAddOption.name }}
-            </div>
-            <q-option-group
-              v-if="menuAddOption.type == 0"
-              v-model="currentMenuOption.add_option_values[addOptionIndex]"
-              :options="menuAddOption.options"
-              color="teal-5">
-              <template v-slot:label="opt">
-                <div class="row justify-between"
-                  style="width: 85vw; max-width: 380px">
-                  <div class="text-subtitle1">{{ opt.label }}</div>
-                  <div class="text-subtitle1">+{{ convertPrice(opt.price) }}원</div>
-                </div>
-              </template>
-            </q-option-group>
-            <q-option-group
-              v-else-if="menuAddOption.type == 1"
-              v-model="currentMenuOption.add_option_values[addOptionIndex]"
-              :options="menuAddOption.options"
-              type="checkbox"
-              color="teal-5">
-              <template v-slot:label="opt">
-                <div class="row justify-between"
-                  style="width: 85vw; max-width: 380px">
-                  <div class="text-subtitle1">{{ opt.label }}</div>
-                  <div class="text-subtitle1">+{{ convertPrice(opt.price) }}원</div>
-                </div>
-              </template>
-            </q-option-group>
-          </q-card-section>
-          <q-separator />
+      </div>
+      <q-card-section class="q-px-sm row justify-between">
+        <div class="q-px-md q-pb-sm  text-h6 text-bold">
+          수량
         </div>
-
-        <q-card-section class="q-px-sm row justify-between">
-          <div class="q-px-md q-pb-sm  text-h6 text-bold">
-            수량
-          </div>
-          <div class="">
-            <q-btn
-              size="md"
-              icon="arrow_downward"
-              :ripple="false"
-              round outline
-              @click="if (currentMenuOption.number > 1) currentMenuOption.number--;"/>
-            <span class="text-subtitle1 text-bold q-px-lg">{{ currentMenuOption.number }}</span>
-            <q-btn
-              size="md"
-              icon="arrow_upward"
-              :ripple="false"
-              round outline
-              @click="currentMenuOption.number++"/>
-          </div>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-section class="q-px-sm row justify-between">
-          <div class="q-px-md q-pb-sm  text-h6 text-bold">
-            총 가격
-          </div>
-          <div class="">
-            <span class="text-subtitle1 text-bold q-px-lg">
-              {{ convertPrice(calTotalPrice(currentMenuId)) }}
-            </span>
-          </div>
-        </q-card-section>
-
-        <q-separator />
-        <q-card-actions class="q-pa-md" vertical>
+        <div class="">
           <q-btn
-            class="text-white text-h6 bg-orange"
-            flat v-close-popup
-            style="border-radius: 32px"
-            @click="addToCart()">
-            장바구니 담기
-          </q-btn>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-  </q-page>
+            size="md"
+            icon="arrow_downward"
+            :ripple="false"
+            round outline
+            @click="if (currentMenuOption.number > 1) currentMenuOption.number--;"/>
+          <span class="text-subtitle1 text-bold q-px-lg">{{ currentMenuOption.number }}</span>
+          <q-btn
+            size="md"
+            icon="arrow_upward"
+            :ripple="false"
+            round outline
+            @click="currentMenuOption.number++"/>
+        </div>
+      </q-card-section>
+      <q-separator />
+      <q-card-section class="q-px-sm row justify-between">
+        <div class="q-px-md q-pb-sm  text-h6 text-bold">
+          총 가격
+        </div>
+        <div class="">
+          <span class="text-subtitle1 text-bold q-px-lg">
+            {{ convertPrice(calTotalPrice(currentMenuId)) }}
+          </span>
+        </div>
+      </q-card-section>
+      <q-separator />
+      <q-card-actions class="q-pa-md" vertical>
+        <q-btn
+          class="text-white text-h6 bg-orange"
+          flat v-close-popup
+          style="border-radius: 32px"
+          @click="addToCart()">
+          장바구니 담기
+        </q-btn>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -437,6 +387,11 @@ export default defineComponent({
       //TODO to server
     }
 
+    // to route page
+    function toPage(path) {
+      router.push({ path: path });
+    }
+
     return {
       selectedPage: ref(0),
 
@@ -456,6 +411,10 @@ export default defineComponent({
       addToCart,
       menuOption: ref(true),
       selectedPage2: ref(1),
+
+      cartLength,
+      existCart,
+      toPage
     };
   },
 });

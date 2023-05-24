@@ -5,11 +5,15 @@ import { api } from "boot/axios";
 export const useStoreInfo = defineStore("storeInfo", {
   state: () => ({
     allStores: LocalStorage.getItem("allStores") || {},
+    allVenues: LocalStorage.getItem("allVenues") || {},
+    allKeywords: LocalStorage.getItem("allKeywords") || {},
     allStories: LocalStorage.getItem("allStories") || {},
     allMenuTables: LocalStorage.getItem("allMenuTables") || {},
     allMenus: LocalStorage.getItem("allMenus") || {},
     allEvents: LocalStorage.getItem("allEvents") || {},
     currentStore: LocalStorage.getItem("currentStore") || {},
+    currentVenue: LocalStorage.getItem("currentVenue") || {},
+
   }),
 
   getters: {
@@ -23,6 +27,10 @@ export const useStoreInfo = defineStore("storeInfo", {
       LocalStorage.set("currentStore", store);
       this.currentStore = store;
     },
+    setCurrentVenue(venue) {
+      LocalStorage.set("currentVenue", venue);
+      this.currentVenue = venue;
+    },
     async setAllStores() {
       var query = "store/allStores";
       await api
@@ -33,6 +41,27 @@ export const useStoreInfo = defineStore("storeInfo", {
           this.allStores = stores;
         })
         .catch((error) => {});
+    },
+    async setAllVenues() {
+      var query = "venue/allVenues";
+      await api
+        .get(query)
+        .then((response) => {
+          var venues = response.data.venues;
+          LocalStorage.set("allVenues", venues);
+          this.allVenues = venues;
+        })
+        .catch((error) => {});
+    },
+    async setAllKeywords() {
+      var query = "keyword/allKeywords";
+      await api
+        .get(query)
+        .then((response) => {
+          var keywords = response.data.keywords;
+          LocalStorage.set("allKeywords", keywords);
+          this.allKeywords = keywords;
+        })
     },
     async setAllStories() {
       var query = "brand/allStories";

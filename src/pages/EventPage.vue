@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div v-if="Object.keys(currentStore).length != 0" class="q-pb-md">
-      <div
+      <!--<div
         style="height: 25vh; max-height: 300px">
         <q-img
             class="fit"
@@ -9,12 +9,8 @@
             :src="baseURL + '/static/images/store/' + currentStore.store_id + '/' + 0 + '.jpg'"
             fit="contain">
         </q-img>
-      </div>      
-      <div
-        class="q-pt-lg row wrap justify-center">
-        
-        <div
-          style="width: 100vw; max-width: 400px">
+      </div>-->
+      <div class="q-pt-lg row wrap justify-center">
           <q-list>
             <q-item class="q-pb-lg">
               <q-item-section class="text-h5 text-bold">
@@ -30,7 +26,7 @@
               </q-item-section>
             </q-item>
             <q-separator />
-            
+
             <q-item class="q-pt-lg">
               <q-item-section>
                 <q-item-label class="text-h6 text-bold">
@@ -38,23 +34,24 @@
                 </q-item-label>
               </q-item-section>
             </q-item>
+
             <q-item class="q-pb-lg column q-gutter-lg">
               <q-card
                 v-for="(currentEvent, currentIndex) in currentEvents"
                 :key="currentIndex"
                 flat bordered
                 class="bg-grey-4"
-                style="width: 90vw; max-width: 400px; height: 20vh ;max-height: 150px; border-radius: 16px; border-width: 2px;">
+                style="width: 95vw; max-width: 500px; height: 30vh ; border-radius: 16px; border-width: 2px;">
                 <q-card-section class="fit q-pa-none">
                   <q-img
                     class="fit"
                     no-transition no-spinner
                     :src="baseURL + '/static/images/event/' + currentEvent.event_id + '.jpg'"
-                    style="width: 90vw; max-width: 400px; height: 20vh ;max-height: 150px; border-radius: 16px;">
+                    style="width: 100vw; max-width: 500px; height: 30vh ;border-radius: 16px;">
                     <div class="absolute-full text-black" style="background-color: rgba(255, 255, 255, 0.7)">
                       <q-list
                         class="absolute-center"
-                        style="width: 90vw; max-width: 400px;">
+                        style="width: 100vw; max-width: 500px;">
                         <q-item class="q-px-lg">
                           <q-item-section>
                             <q-item-label>
@@ -64,8 +61,11 @@
                               <div class="q-py-sm text-subtitle1">
                                 {{ currentEvent.event_subtitle }}
                               </div>
+                              <div class="q-py-sm">
+                                {{ currentEvent.event_description }}
+                              </div>
                               <div class="text-overline">
-                                {{ currentEvent.event_duedate.slice(0, 10) }}
+                                ~ {{ currentEvent.event_duedate.slice(0, 10) }}
                               </div>
                             </q-item-label>
                           </q-item-section>
@@ -73,7 +73,7 @@
                             <div class="q-pt-lg fit column items-center text-black">
                               <q-icon color="black" size="md" name="favorite_border" />
                               <div>
-                                0
+                                {{ currentEvent.event_subscription_number }}
                               </div>
                             </div>
                           </q-item-section>
@@ -84,9 +84,9 @@
                 </q-card-section>
               </q-card>
             </q-item>
-            
+
             <q-separator />
-            
+
             <q-item class="q-pt-lg">
               <q-item-section>
                 <q-item-label class="text-h6 text-bold">
@@ -100,17 +100,17 @@
                 :key="pastIndex"
                 flat bordered
                 class="bg-grey-4"
-                style="width: 90vw; max-width: 400px; height: 20vh ;max-height: 150px; border-radius: 16px; border-width: 2px;">
+                style="width: 95vw; max-width: 500px; height: 30vh ; border-radius: 16px; border-width: 2px;">
                 <q-card-section class="fit q-pa-none">
                   <q-img
                     class="fit"
                     no-transition no-spinner
                     :src="baseURL + '/static/images/event/' + pastEvent.event_id + '.jpg'"
-                    style="width: 90vw; max-width: 400px; height: 20vh ;max-height: 150px; border-radius: 16px">
+                    style="width: 100vw; max-width: 500px; height: 30vh ; border-radius: 16px">
                     <div class="absolute-full text-black" style="background-color: rgba(255, 255, 255, 0.7)">
                       <q-list
                         class="absolute-center"
-                        style="width: 90vw; max-width: 400px;">
+                        style="width: 100vw; max-width: 500px;">
                         <q-item class="q-px-lg">
                           <q-item-section>
                             <q-item-label>
@@ -119,6 +119,9 @@
                               </div>
                               <div class="q-py-sm text-subtitle1">
                                 {{ pastEvent.event_subtitle }}
+                              </div>
+                              <div class="q-py-sm">
+                                {{ pastEvent.event_description }}
                               </div>
                               <div class="text-overline">
                                 {{ pastEvent.event_duedate.slice(0, 10) }}
@@ -129,7 +132,7 @@
                             <div class="q-pt-lg fit column items-center text-black">
                               <q-icon color="black" size="md" name="favorite_border" />
                               <div>
-                                0
+                                {{ pastEvent.event_subscription_number }}
                               </div>
                             </div>
                           </q-item-section>
@@ -139,12 +142,10 @@
                   </q-img>
                 </q-card-section>
               </q-card>
-            
+
             </q-item>
           </q-list>
         </div>
-      
-      </div>
     </div>
   </q-page>
 </template>
@@ -177,7 +178,7 @@ export default defineComponent({
     var pastEvents = ref([]);
     function initEvent() {
       // init event
-      var nowTime = Date.now(); 
+      var nowTime = Date.now();
       for(const event_id of ds(currentStore.value.event_ids)) {
         var duedate = Date.parse(allEvents.value[event_id].event_duedate)
         if(duedate > nowTime) {
@@ -188,7 +189,7 @@ export default defineComponent({
         }
       }
     }
-    
+
     onMounted(() => {
       setBottomTab('event');
       initEvent();

@@ -3,7 +3,7 @@
     <q-header
       class="bg-white"
       height-hint="98">
-      <q-toolbar
+      <!--<q-toolbar
         v-if="currentPath == '/brand' || currentPath == '/menu' || currentPath == '/event' || currentPath == '/nfc'"
         class="q-px-sm bg-white text-black justify-between">
         <q-btn
@@ -13,7 +13,7 @@
         </q-btn>
         <q-toolbar-title
           class="q-pt-xs">
-          {{ currentStore.store_title }}
+
         </q-toolbar-title>
         <q-btn
           outline
@@ -26,10 +26,10 @@
             {{ cartLength }}
           </q-badge>
         </q-btn>
-      </q-toolbar>
+      </q-toolbar>-->
 
       <q-toolbar
-        v-else-if="currentPath == '/cart'"
+        v-if="currentPath == '/cart'"
         class="bg-white text-black q-px-none">
         <q-btn
           flat dense
@@ -58,7 +58,7 @@
       </q-toolbar>
 
 
-        <q-toolbar v-else class="column q-pb-md">
+        <!--<q-toolbar v-else class="column q-pb-md">
           <div class="fit">
             <q-tabs
               v-model="headerTab"
@@ -70,13 +70,10 @@
               active-class="bg-white text-black"
               content-class="bg-white text-grey-5"
               indicator-color="transparent"
-              @click="headerTabRoute()">
+              @click="headerTabRoute()">s
               <q-tab name="near" :ripple="false">
                 근처로
               </q-tab>
-              <!--<q-tab name="event" :ripple="false">
-                이벤트
-              </q-tab>-->
               <q-tab name="list" :ripple="false">
                 리스트
               </q-tab>
@@ -99,7 +96,7 @@
               </template>
             </q-input>
           </div>
-        </q-toolbar>
+        </q-toolbar>-->
     </q-header>
 
     <q-drawer
@@ -170,18 +167,18 @@
             <q-icon class="q-pb-xs" size="sm" name="explore"/>
             둘러보기
           </q-tab>
+          <q-tab name="brand" :ripple="false">
+            <q-icon class="q-pb-xs" size="sm" name="store"/>
+            장소소개
+          </q-tab>
           <q-tab name="menu" :ripple="false">
             <q-icon class="q-pb-xs" size="sm" name="menu_book"/>
             메뉴판
           </q-tab>
-          <!--<q-tab name="event" :ripple="false">
+          <q-tab name="event" :ripple="false">
             <q-icon class="q-pb-xs" size="sm" name="event"/>
             이벤트들
           </q-tab>
-          <q-tab name="brand" :ripple="false">
-            <q-icon class="q-pb-xs" size="sm" name="store"/>
-            가게 소개
-          </q-tab>-->
           <q-tab name="check" :ripple="false">
             <q-icon class="q-pb-xs" size="sm" name="favorite"/>
             내정보
@@ -460,7 +457,7 @@
 -->
 
 <script>
-import { defineComponent, ref, computed, onMounted } from "vue";
+import { defineComponent, ref, computed, onMounted, onBeforeMount, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useRouteInfo } from "src/stores/routeInfo";
@@ -468,6 +465,8 @@ import { useStoreInfo } from "src/stores/storeInfo";
 import { useCartStore } from "src/stores/cartInfo";
 import { useOrderCheckStore } from "src/stores/orderCheck";
 import EventNotifications from "src/components/EventNotifications.vue";
+import axios from "axios";
+import { api } from "src/boot/axios";
 
 const linksList = [
   {
@@ -510,7 +509,7 @@ export default defineComponent({
     // store information
     const storeInfo = useStoreInfo();
     const { currentStore, allStores, allMenus } = storeToRefs(storeInfo);
-    const { setAllStores, setAllStories, setAllMenuTables, setAllMenus, setAllEvents, setCurrentStore } = storeInfo;
+    const { setAllStores, setAllVenues, setAllKeywords, setAllStories, setAllMenuTables, setAllMenus, setAllEvents, setCurrentStore } = storeInfo;
 
     // cart information
     const cartStore = useCartStore();
@@ -604,7 +603,7 @@ export default defineComponent({
         }
       }
       else if(bottomTab.value == "check") {
-        router.push({ path: "/check" })
+        router.push({ path: "/user" })
       }
       else {
         if(Object.keys(currentStore.value).length == 0) {
@@ -696,17 +695,74 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
     const rightDrawerOpen = ref(false);
 
-    onMounted(() => {
+    function getUserInfo() {
+      window.Kakao.init("cc41afe829f5357f1b44183ca6956c7c");
+
+      const url = new URL(window.location.href);
+      const urlParams = url.searchParams;
+      const code = urlParams.get('code');
+
+      const getKakaoToken2 = (code) => {
+      const instance = axios.create({
+        baseURL: 'https://kauth.kakao.com',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+
+      const data = new URLSearchParams();
+      data.append('grant_type', 'authorization_code');
+      data.append('client_id', 'b54367b3b5ed441e90a18605207ad97d');
+      data.append('redirect_uri', 'http://localhost:8080/');
+      data.append('code', code);
+
+      instance.post('/oauth/token', data)
+      .then(response => {
+        console.log(response.data);
+
+        const headers = {
+          'Authorization': 'Bearer ' +  response.data.access_token,
+          'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        };
+
+        axios.post('https://kapi.kakao.com/v2/user/me', {}, { headers })
+          .then(response => {
+            console.log(response.data);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+
+      })
+      .catch(error => {
+          console.error(error);
+        });
+      }
+
+      if(code != null) {
+        getKakaoToken2(code)
+      }
+    }
+
+    onBeforeMount(() => {
       setAllStores();
+      setAllVenues();
+      setAllKeywords();
       setAllStories();
       setAllMenuTables();
       setAllMenus();
       setAllEvents();
-    })
+
+      const script = document.createElement("script");
+      script.crossOrigin="anonymous"
+      script.integrity="sha384-dpu02ieKC6NUeKFoGMOKz6102CLEWi9+5RQjWSV0ikYSFFd8M3Wp2reIcquJOemx"
+      script.src = "https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.min.js"
+      script.onload = () => getUserInfo();
+      document.head.appendChild(script);
+    });
 
     return {
       searchStore: ref(""),
-
       currentPath,
 
       essentialLinks: linksList,
