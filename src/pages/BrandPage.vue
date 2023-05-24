@@ -502,13 +502,3 @@ export default defineComponent({
   #menu_wrap {position:absolute;top:0;left:0;bottom:0;width:250px;margin:10px 0 30px 10px;padding:5px;overflow-y:auto;background:rgba(255, 255, 255, 0.7);z-index: 1;font-size:12px;border-radius: 10px;}
 
 </style>
-
-<style lang="sass" scoped>
-.visible
-  width: 95vw
-  max-width: 400px
-.invisible
-  width: 0px
-  height: 0px
-  overflow: hidden
-</style>

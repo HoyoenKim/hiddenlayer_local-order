@@ -11,9 +11,12 @@ export const useStoreInfo = defineStore("storeInfo", {
     allMenuTables: LocalStorage.getItem("allMenuTables") || {},
     allMenus: LocalStorage.getItem("allMenus") || {},
     allEvents: LocalStorage.getItem("allEvents") || {},
+    allBooths: LocalStorage.getItem("allBooths") || {},
     currentStore: LocalStorage.getItem("currentStore") || {},
     currentVenue: LocalStorage.getItem("currentVenue") || {},
-
+    selectedMode: LocalStorage.getItem("selectedMode") || 'store',
+    currentBooth: LocalStorage.getItem("currentBooth") || {},
+    selectedBoothId: LocalStorage.getItem("selectedBoothId") || -1,
   }),
 
   getters: {
@@ -26,10 +29,21 @@ export const useStoreInfo = defineStore("storeInfo", {
     setCurrentStore(store) {
       LocalStorage.set("currentStore", store);
       this.currentStore = store;
+      LocalStorage.getItem("selectedMode", 'store')
+      this.selectedMode = 'store'
     },
     setCurrentVenue(venue) {
       LocalStorage.set("currentVenue", venue);
       this.currentVenue = venue;
+      LocalStorage.getItem("selectedMode", 'venue')
+      this.selectedMode = 'venue'
+    },
+    setSelectedBoothId(boothId) {
+      LocalStorage.set("selectedBoothId", boothId);
+      this.selectedBoothId = boothId;
+
+      this.currentBooth = this.allBooths[boothId];
+      LocalStorage.set("currentBooth", this.currentBooth);
     },
     async setAllStores() {
       var query = "store/allStores";
@@ -61,6 +75,16 @@ export const useStoreInfo = defineStore("storeInfo", {
           var keywords = response.data.keywords;
           LocalStorage.set("allKeywords", keywords);
           this.allKeywords = keywords;
+        })
+    },
+    async setAllBooths() {
+      var query = "booth/allBooths";
+      await api
+        .get(query)
+        .then((response) => {
+          var booths = response.data.booths;
+          LocalStorage.set("allBooths", booths);
+          this.allBooths = booths;
         })
     },
     async setAllStories() {

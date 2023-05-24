@@ -47,9 +47,7 @@
           />
         </div>
       </form>
-      <div>            <q-btn
-        @click="kakaoLogin()">
-     </q-btn>
+      <div>
           <q-img
             src="/imgs/kakao_login_large_narrow.png"
             style="max-width:200px"

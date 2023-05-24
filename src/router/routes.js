@@ -10,7 +10,9 @@ const routes = [
       { path: "/check", component: () => import("pages/OrderCheck.vue") },
       { path: "/cart", component: () => import("pages/CartPage.vue") },
       { path: "/nfc", component: () => import("pages/NfcTagPage.vue") },
-      { path: "/venue", component: () => import("pages/venuePage.vue") },
+      { path: "/venue", component: () => import("pages/VenuePage.vue") },
+      { path: "/venueMenu", component: () => import("pages/VenueMenuPage.vue") },
+      { path: "/venueEvent", component: () => import("pages/VenueEventPage.vue") },
     ],
   },
   {

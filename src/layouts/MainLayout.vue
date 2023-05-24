@@ -508,8 +508,8 @@ export default defineComponent({
 
     // store information
     const storeInfo = useStoreInfo();
-    const { currentStore, allStores, allMenus } = storeToRefs(storeInfo);
-    const { setAllStores, setAllVenues, setAllKeywords, setAllStories, setAllMenuTables, setAllMenus, setAllEvents, setCurrentStore } = storeInfo;
+    const { currentStore, allStores, allMenus, selectedMode } = storeToRefs(storeInfo);
+    const { setAllStores, setAllVenues, setAllBooths, setAllKeywords, setAllStories, setAllMenuTables, setAllMenus, setAllEvents, setCurrentStore } = storeInfo;
 
     // cart information
     const cartStore = useCartStore();
@@ -603,7 +603,7 @@ export default defineComponent({
         }
       }
       else if(bottomTab.value == "check") {
-        router.push({ path: "/user" })
+        router.push({ path: "/check" })
       }
       else {
         if(Object.keys(currentStore.value).length == 0) {
@@ -611,17 +611,32 @@ export default defineComponent({
         }
         else {
           if(bottomTab.value == "menu") {
-            router.push({ path: "/menu" })
+
+            if(selectedMode.value == 'store') {
+              router.push({ path: "/menu" })
+            }
+            else if(selectedMode.value == 'venue') {
+              router.push({ path: "/venueMenu" })
+            }
           }
           else if(bottomTab.value == "event") {
             setHeaderTab("event");
-            router.push({ path: "/event" })
+            if(selectedMode.value == 'store') {
+              router.push({ path: "/event" })
+            }
+            else if(selectedMode.value == 'venue') {
+              router.push({ path: "/venueEvent" })
+            }
           }
           else if(bottomTab.value == "brand") {
-            router.push({ path: "/brand" })
+            if(selectedMode.value == 'store') {
+              router.push({ path: "/brand" })
+            }
+            else if(selectedMode.value == 'venue') {
+              router.push({ path: "/venue" })
+            }
           }
         }
-
       }
     }
 
@@ -752,6 +767,7 @@ export default defineComponent({
       setAllMenuTables();
       setAllMenus();
       setAllEvents();
+      setAllBooths();
 
       const script = document.createElement("script");
       script.crossOrigin="anonymous"

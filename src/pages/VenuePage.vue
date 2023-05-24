@@ -1,43 +1,161 @@
 <template>
   <q-page>
-    {{ currentVenue }}
+
     <div
-      class="column content-center">
+      class="column items-center">
       <div
-        class="q-px-xs q-pb-md text-center text-h4"
+        class="q-px-xs q-py-md text-center text-h4"
         style="width:100vw; max-width:500px">
-        {{ currentVenue.venue_title }}
+        부스 소개
       </div>
       <div
         class="q-px-xs q-pb-md text-center"
         style="width:100vw; max-width:500px">
         <q-separator size="4px" color="grey-4" inset />
       </div>
-
       <div
-        class="q-px-xs q-pb-md text-center text-h5"
-        style="width:100vw; max-width:500px">
-        {{ currentVenue.venue_description }}
-      </div>
-      <div
-        class="q-px-xs q-pb-md text-center text-h5"
+        class="q-px-xs q-pb-md text-center"
         style="width:100vw; max-width:500px">
         <q-img
-            no-transition
-            no-spinner
-            class="fit"
-            fit="contain"
-            :src="baseURL + '/static/images/venue/' + currentVenue.venue_id + '/0.jpg'"
-            style="max-height: 400px;"/>
+          no-transition
+          no-spinner
+          class="fit"
+          fit="fill"
+          :src="baseURL + '/static/images/venue/' + currentVenue.venue_id + '/0.jpg'">
+          <div
+            v-ripple
+            v-for="boothId in ds(currentVenue.booth_ids)" :key=boothId
+            @click="selectedBooth(boothId)"
+            :style="'opacity:1; absolute; top: ' + ds(allBooths[boothId].booth_location)[1] + '%; left: ' + ds(allBooths[boothId].booth_location)[0] + '%; width: ' + ds(allBooths[boothId].booth_location)[2] + '%; height: ' + ds(allBooths[boothId].booth_location)[3] + '%;'">
+            <q-icon v-if="selectedBoothId == boothId" size="sm" name="person_pin_circle" ></q-icon>
+          </div>
+        </q-img>
       </div>
 
-      <div id="map" style="width:100vw; max-width:500px; height:150px;"></div>
       <div
-        class="q-px-xs q-pb-md"
+        v-if="selectedBoothId == -1"
+        class="q-px-xs q-pb-md text-center"
         style="width:100vw; max-width:500px">
+        선택된 부스가 없습니다. 지도에서 부스를 선택해 주세요.
+      </div>
+      <div
+        v-else
+        class=""
+        style="width:100vw; max-width:500px">
+        <div
+          class="q-px-xs q-pb-md text-center"
+          style="width:100vw; max-width:500px; font-size: 20px; color: #02BA8E">
+          {{ currentBooth.booth_title }}
+        </div>
+        <div
+          class="q-px-xs q-pb-md text-center text-h4"
+          style="width:100vw; max-width:500px;">
+          <div v-for="t in currentBooth.booth_description.split('\n')" :key="t">
+            {{ t }}
+          </div>
+        </div>
+        <div
+          class="q-px-xl q-pb-md"
+          style="width:100vw; max-width:500px;">
+          <q-separator size="4px" color="grey-4" inset />
+        </div>
+        <div>
+          <q-card flat bordered>
+            <q-card-section class="q-pa-none">
+              <div v-if="parseInt(currentBooth.booth_images_nums) == 0"
+                class="bg-grey-4 flex flex-center"
+                style="height: 400px;">
+                <div>
+                  이미지 준비중입니다.
+                </div>
+              </div>
+              <q-carousel
+                v-else
+                v-model="boothSlide"
+                class="q-pa-none"
+                swipeable infinite
+                style="height: 400px;">
+                <q-carousel-slide
+                  v-for="boothImageNum in parseInt(currentBooth.booth_images_nums)" :key="boothImageNum" :name="boothImageNum"
+                  class=" q-pa-none bg-grey-4">
+                  <q-img
+                    no-transition
+                    no-spinner
+                    class="fit"
+                    fit="contain"
+                    :src="baseURL + '/static/images/booth/' + currentBooth.booth_id + '/' + boothImageNum + '.jpg'"
+                    style="max-height: 400px;"/>
+                </q-carousel-slide>
+              </q-carousel>
+            </q-card-section>
+            <q-card-section
+              class="q-pa-none row justify-center bg-grey-4">
+              <div
+                v-for="boothImageNum in parseInt(currentBooth.booth_images_nums)" :key="boothImageNum"
+                class="q-px-xs"
+                @click="boothSlide = boothImageNum">
+                <q-icon
+                  v-if="boothImageNum == boothSlide"
+                  class="text-blue-9" name="circle"
+                  style="font-size: 0.5em;" />
+                <q-icon
+                  v-else
+                  class="text-white" name="circle"
+                  style="font-size: 0.5em;"/>
+              </div>
+            </q-card-section>
+          </q-card>
+        </div>
+
+        <div
+          v-for="keywordId in ds(currentBooth.booth_keyword_ids).slice(0, -4)" :key="keywordId"
+          class="q-px-md q-pt-lg q-pb-md bg-purple-3"
+          style="width:100vw; max-width:500px; font-size: 14px">
+          <div class="text-bold">
+            #{{ allKeywords[keywordId].keyword_title }}
+          </div>
+          <div v-for="t in allKeywords[keywordId].keyword_description.split('\n')" :key="t">
+            {{ t }}
+          </div>
+        </div>
+        <div
+          v-for="keywordId in ds(currentBooth.booth_keyword_ids).slice(-4)" :key="keywordId"
+          class="q-px-md q-pt-lg q-pb-sm bg-yellow"
+          style="width:100vw; max-width:500px; font-size: 14px">
+          <div class="text-bold">
+            #{{ allKeywords[keywordId].keyword_title }}
+          </div>
+          <div v-for="t in allKeywords[keywordId].keyword_description.split('\n')" :key="t">
+            {{ t }}
+          </div>
+        </div>
+        <div class="bg-yellow">
+          <div class="q-pa-md q-pb-lg">
+            <q-btn v-if="parseInt(currentBooth.booth_images_nums) > 0"
+              class="fit" color="white" style="background-color: #0AD3FF; font-size: 20px" flat
+              @click="openBookDialog = true">
+              예약하러 가기
+            </q-btn>
+          </div>
+        </div>
       </div>
     </div>
   </q-page>
+  <q-dialog
+    v-model="openBookDialog"
+    full-width>
+    <q-card>
+      <q-card-section>
+        <div class="text-h6">예약</div>
+      </q-card-section>
+      <q-card-section class="q-pt-none">
+        부스 현장 예약만 가능합니다.
+      </q-card-section>
+      <q-card-actions align="right" class="bg-white text-teal">
+        <q-btn flat label="OK" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -62,63 +180,32 @@ export default defineComponent({
 
     // store information
     const storeInfo = useStoreInfo();
-    const { currentVenue } = storeToRefs(storeInfo);
-    const { setAllStores, setAllMenus, setCurrentStore } = storeInfo;
+    const { currentVenue, allBooths, selectedBoothId, currentBooth, allKeywords } = storeToRefs(storeInfo);
+    const { setAllStores, setAllMenus, setCurrentStore, setSelectedBoothId } = storeInfo;
 
-    async function initMap() {
-      var domain = 'https://i1.daumcdn.net';
-      var path = '/dmaps/apis/openapi/sampleimg/';
-      var plan = function( x, y, z ) {
-          y = -y - 1;
-          var limit = Math.ceil( 3 / Math.pow( 2, z ) );
-
-          if ( 0 <= y && y < limit && 0 <= x && x < limit ) {
-              return baseURL + '/static/images/venue/' + currentVenue.value.venue_id + '/0.jpg';
-          } else {
-              return 'https://i1.daumcdn.net/dmaps/apis/white.png';
-          }
-      };
-
-      kakao.maps.Tileset.add( 'PLAN',
-              new kakao.maps.Tileset(
-                  512, 512, plan, '', false, 0, 2 ) );
-
-      var node = document.getElementById( 'map' );
-      var map = new kakao.maps.Map( node, {
-          projectionId: null,
-          mapTypeId: kakao.maps.MapTypeId.PLAN,
-          $scale: false,
-          center: new kakao.maps.Coords( 650, -550 ),
-          level: 2
-      } );
-      var center = map.getCenter();
-      var marker = new kakao.maps.Marker({
-          position: center
-      });
-      marker.setMap(map);
-
-      var infowindow = new kakao.maps.InfoWindow({
-          content: '커스텀 타일셋을 올릴수 있습니다!'
-      });
-      infowindow.open(map, marker);
-    }
     onBeforeMount(() => {
       setBottomTab('brand');
-      const script = document.createElement("script");
-      script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=cc41afe829f5357f1b44183ca6956c7c&libraries=services&autoload=false"
-      script.onload = () => window.kakao.maps.load(initMap);
-      document.head.appendChild(script);
+      setSelectedBoothId(selectedBoothId.value);
     })
+
+    function selectedBooth(boothId) {
+      setSelectedBoothId(boothId)
+    }
 
     return {
       currentVenue,
       baseURL,
+      ds,
+      allBooths,
+      selectedBooth,
+      selectedBoothId,
+      currentBooth,
+      boothSlide: ref(1),
+      allKeywords,
+      openBookDialog: ref(false)
     };
   },
 });
 </script>
 <style lang="sass" scoped>
-.store-card
-  width: 95vw
-  max-width: 400px
 </style>
