@@ -327,7 +327,7 @@ export default defineComponent({
       setHeaderTab("near");
       setBottomTab("home");
       const script = document.createElement("script");
-      script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=cc41afe829f5357f1b44183ca6956c7c&libraries=services&autoload=false"
+      script.src = "http://dapi.kakao.com/v2/maps/sdk.js?appkey=cc41afe829f5357f1b44183ca6956c7c&libraries=services&autoload=false"
       script.onload = () => window.kakao.maps.load(initMap);
       document.head.appendChild(script);
     })

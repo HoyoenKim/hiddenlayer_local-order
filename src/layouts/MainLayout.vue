@@ -56,8 +56,10 @@
           <q-icon name="arrow_back" />
         </q-btn>
       </q-toolbar>
-
-
+      <q-toolbar
+        class="bg-white text-black q-px-none"
+        v-else>
+      </q-toolbar>
         <!--<q-toolbar v-else class="column q-pb-md">
           <div class="fit">
             <q-tabs

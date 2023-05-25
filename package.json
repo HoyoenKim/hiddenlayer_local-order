@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@capacitor/android": "^4.7.0",
-    "@capacitor/cli": "^4.7.0",
     "@capacitor/core": "^4.7.0",
     "@capacitor/ios": "^4.7.0",
     "@quasar/extras": "^1.0.0",
@@ -21,12 +20,12 @@
     "pinia": "^2.0.30",
     "pinia-plugin-persistedstate": "^3.1.0",
     "quasar": "^2.6.0",
-    "v-viewer": "^1.6.4",
     "vue": "^3.0.0",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
+    "@capacitor/cli": "^4.8.0",
     "@quasar/app-webpack": "^3.0.0",
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.1.0",
